@@ -29,7 +29,6 @@ namespace Whisper_Messenger.ViewModels
         public event Action MyEvent2;
         string temp;
         byte[] defImg;
-        List<User> contList;
         public MainViewModel(ManualResetEvent ev)
         {
             mRevent = ev;
@@ -40,7 +39,6 @@ namespace Whisper_Messenger.ViewModels
             CurrentPhone = "phone";
             CurrentSearch = "search";
             Sms = "sms";
-            contList = new List<User>();
             IsButtonEnabled = true;
             sender = new TcpSender();
             sender.ReceiveMessage(socket, MyEvent2);
@@ -491,14 +489,17 @@ namespace Whisper_Messenger.ViewModels
                 {
                     CurrentUserAvatar = ConvertBitmapFunc(sender.us.avatar);
                 }
-                LoadContacts();
-                foreach (var e in contList)
+                foreach (var e in sender.us.profile)
                 {
+                    User u = new User();
                     if (e.avatar != null)
                     {
-                        e.image = ConvertBitmapFunc(e.avatar);
+                        u.image = ConvertBitmapFunc(e.avatar);
                     }
-                    Contacts.Add(e);
+                    u.contact = e.login;
+                    u.phone = e.phone;
+                    u.avatar = e.avatar;
+                    Contacts.Add(u);
                 }
             }
             else if (sender.us.command == "Match")
@@ -508,8 +509,6 @@ namespace Whisper_Messenger.ViewModels
                     sender.us.image = ConvertBitmapFunc(sender.us.avatar);
                 }
                 Contacts.Add(sender.us);
-                contList.Add(sender.us);
-                SaveContacts();
                 CurrentContact = sender.us.contact;
             }
             else if (sender.us.command == "CurrentProfile")
@@ -582,35 +581,6 @@ namespace Whisper_Messenger.ViewModels
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.EndInit();
                 return bitmap;
-            }
-        }
-        private void SaveContacts()
-        {
-            FileStream stream = null;
-            DataContractJsonSerializer jsonFormatter = null;
-            stream = new FileStream("contact_list.json", FileMode.Create);
-            jsonFormatter = new DataContractJsonSerializer(typeof(List<User>));
-            try
-            {
-                jsonFormatter.WriteObject(stream, contList);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Json: " + ex.Message);
-            }
-            stream.Close();
-        }
-
-        private void LoadContacts()
-        {
-            if (File.Exists("contact_list.json"))
-            {
-                FileStream stream = null;
-                DataContractJsonSerializer jsonFormatter = null;
-                stream = new FileStream("contact_list.json", FileMode.Open);
-                jsonFormatter = new DataContractJsonSerializer(typeof(List<User>));
-                contList = (List<User>)jsonFormatter.ReadObject(stream);
-                stream.Close();
             }
         }
     }
