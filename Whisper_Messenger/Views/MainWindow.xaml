@@ -63,7 +63,7 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
 
                 </Button>
             </Grid>
-            <ListBox Grid.Row="1" Name="UserBox"  ItemsSource="{Binding Contacts}" SelectedItem="{Binding CurrentContact, Mode=TwoWay}" BorderBrush="Transparent"
+            <ListBox Grid.Row="1" Name="UserBox"  ItemsSource="{Binding Contacts, Mode=TwoWay}" SelectedItem="{Binding CurrentContact, Mode=TwoWay}" BorderBrush="Transparent"
              Background="Transparent" ItemContainerStyle="{StaticResource ContactCard}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">

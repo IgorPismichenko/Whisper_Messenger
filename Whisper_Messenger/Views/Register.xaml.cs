@@ -106,9 +106,6 @@ namespace Whisper_Messenger.Views
             logIn.DataContext = DataContext;
             logIn.sock = sock;
             logIn.Show();
-            this.man_event = null;
-            this.DataContext = null;
-            this.sock = null;
             this.Close();
         }
     }

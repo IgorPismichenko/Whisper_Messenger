@@ -224,11 +224,11 @@
                         <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
 
                             <Border Width="40" Height="40" CornerRadius="25">
-                                <Image Width="40" Height="40" Source="{Binding image}">
+                                <Image Width="40" Height="40" Source="{Binding Image, Mode=TwoWay}">
                                 </Image>
                             </Border>
                             <StackPanel>
-                                <Label Content="{Binding contact}"  Foreground="Black" Margin="10,5,0,0" FontSize="20"></Label>
+                                <Label Content="{Binding Contact, Mode=TwoWay}"  Foreground="Black" Margin="10,5,0,0" FontSize="20"></Label>
                             </StackPanel>
                         </StackPanel>
                     </Border>

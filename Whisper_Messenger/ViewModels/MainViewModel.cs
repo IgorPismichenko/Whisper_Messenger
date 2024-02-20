@@ -494,9 +494,9 @@ namespace Whisper_Messenger.ViewModels
                     User u = new User();
                     if (e.avatar != null)
                     {
-                        u.image = ConvertBitmapFunc(e.avatar);
+                        u.Image = ConvertBitmapFunc(e.avatar);
                     }
-                    u.contact = e.login;
+                    u.Contact = e.login;
                     u.phone = e.phone;
                     u.avatar = e.avatar;
                     Contacts.Add(u);
@@ -506,10 +506,10 @@ namespace Whisper_Messenger.ViewModels
             {
                 if (sender.us.avatar != null)
                 {
-                    sender.us.image = ConvertBitmapFunc(sender.us.avatar);
+                    sender.us.Image = ConvertBitmapFunc(sender.us.avatar);
                 }
                 Contacts.Add(sender.us);
-                CurrentContact = sender.us.contact;
+                CurrentContact = sender.us.Contact;
             }
             else if (sender.us.command == "CurrentProfile")
             {
@@ -543,12 +543,12 @@ namespace Whisper_Messenger.ViewModels
             {
                 foreach (var c in Contacts)
                 {
-                    if (c.login == sender.us.mess)
+                    if (c.Contact == sender.us.mess)
                     {
-                        c.login = sender.us.login;
+                        c.Contact = sender.us.login;
                         if (sender.us.avatar != null)
                         {
-                            c.image = ConvertBitmapFunc(sender.us.avatar);
+                            c.Image = ConvertBitmapFunc(sender.us.avatar);
                         }
                     }
                 }
