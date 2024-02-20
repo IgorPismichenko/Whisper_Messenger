@@ -267,10 +267,24 @@
                             <StackPanel Orientation="Vertical">
                                 <TextBlock Text="{TemplateBinding Content}" 
                                 VerticalAlignment="Center" 
-                                TextWrapping="Wrap" FontWeight="Medium"/>
+                                TextWrapping="Wrap" FontWeight="Medium" />
                             </StackPanel>
 
                         </Border>
+
+
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            CornerRadius="5" 
+                            HorizontalAlignment="Left"                          
+                            VerticalAlignment="Center" 
+                            Margin="2" 
+                            Padding="6"
+                            Width="Auto">
+                            <!--<Image Source="{Binding Image}"  Width="50" Height="50"></Image>-->
+                        </Border>
+
 
                     </StackPanel>
                    

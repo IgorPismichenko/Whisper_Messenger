@@ -234,6 +234,7 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _ChangeCommand;
         private DelegateCommand _ReadProfileCommand;
         private DelegateCommand _DeleteProfileCommand;
+        private DelegateCommand _SendFileCommand;
         public ICommand RegButtonClick
         {
             get
@@ -298,30 +299,7 @@ namespace Whisper_Messenger.ViewModels
                 return _SendCommand;
             }
         }
-        //private void Send(object o)
-        //{
-        //    User user = new User() { contact = CurrentContact, mess = "(" + DateTime.Now.ToString() + ") " + CurrentLogin + ": " + Sms, command = "Send" };
-        //    Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
-
-
-
-
-        //        string timestamp = match.Groups[1].Value;
-        //        string nickname = match.Groups[2].Value;
-        //        string messageText = match.Groups[3].Value;
-
-
-        //        string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
-        //        Messages.Add(formattedMessage);
-
-
-
-        //    //Messages.Add(user.mess);
-        //    Sms = "";
-        //    sender.SendCommand(user, mRevent, MyEvent2);
-
-        //}
-
+        
         private void Send(object o)
         {
             User user = new User() { contact = CurrentContact, mess = "(" + DateTime.Now.ToString() + ") " + CurrentLogin + ": " + Sms, command = "Send" };
@@ -519,6 +497,26 @@ namespace Whisper_Messenger.ViewModels
             return true;
         }
 
+        public ICommand SendFileClick
+        {
+            get
+            {
+                if (_SendFileCommand == null)
+                {
+                    _SendFileCommand = new DelegateCommand(SendFile, CanSendFile);
+                }
+                return _SendFileCommand;
+            }
+        }
+
+        private void SendFile(object o)
+        {
+
+        }
+        private bool CanSendFile(object o)
+        {
+            return true;
+        }
         public void MyEventHandler()
         {
             if (sender.us.command == "Chat")
