@@ -16,6 +16,8 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Whisper_Messenger.Commands;
 using Whisper_Messenger.Models;
+using Tulpep.NotificationWindow;
+using System.Windows.Documents;
 
 namespace Whisper_Messenger.ViewModels
 {
@@ -30,6 +32,7 @@ namespace Whisper_Messenger.ViewModels
         public event Action MyEvent2;
         string temp;
         byte[] defImg;
+        private PopupNotifier notifier = null;
         public MainViewModel(ManualResetEvent ev)
         {
             mRevent = ev;
@@ -295,14 +298,63 @@ namespace Whisper_Messenger.ViewModels
                 return _SendCommand;
             }
         }
+        //private void Send(object o)
+        //{
+        //    User user = new User() { contact = CurrentContact, mess = "(" + DateTime.Now.ToString() + ") " + CurrentLogin + ": " + Sms, command = "Send" };
+        //    Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+
+
+
+
+        //        string timestamp = match.Groups[1].Value;
+        //        string nickname = match.Groups[2].Value;
+        //        string messageText = match.Groups[3].Value;
+
+
+        //        string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+        //        Messages.Add(formattedMessage);
+
+
+
+        //    //Messages.Add(user.mess);
+        //    Sms = "";
+        //    sender.SendCommand(user, mRevent, MyEvent2);
+
+        //}
+
         private void Send(object o)
         {
             User user = new User() { contact = CurrentContact, mess = "(" + DateTime.Now.ToString() + ") " + CurrentLogin + ": " + Sms, command = "Send" };
-            Messages.Add(user.mess);
+
+            string messageToParse = user.mess;
+
+            Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+
+            Match match = regex.Match(messageToParse);
+
+            if (match.Success)
+            {
+                string timestamp = match.Groups[1].Value;
+                string nickname = match.Groups[2].Value;
+                string messageText = match.Groups[3].Value;
+
+             
+                string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+
+                
+                Messages.Add(formattedMessage);
+            }
+            else
+            {
+               
+                Console.WriteLine("Message format is invalid: " + messageToParse);
+            }
+
+           
             Sms = "";
             sender.SendCommand(user, mRevent, MyEvent2);
-
         }
+
         private bool CanSend(object o)
         {
             if (Sms == "")
@@ -567,6 +619,19 @@ namespace Whisper_Messenger.ViewModels
 
                             string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
                             Messages.Add(formattedMessage);
+
+                            notifier = new PopupNotifier();
+                            notifier.BodyColor = Color.Yellow;
+                            notifier.TitleText = nickname;
+                            notifier.ContentText = messageText;
+
+                            notifier.TitleFont = new Font("Arial", 20);
+
+
+                            notifier.ContentFont = new Font("Arial", 18);
+
+
+                            notifier.Popup();
 
                         }
                         else
