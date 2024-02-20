@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -472,7 +473,25 @@ namespace Whisper_Messenger.ViewModels
             {
                 foreach (var m in sender.us.chat)
                 {
-                    Messages.Add(m);
+                    Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+
+                    Match match = regex.Match(m);
+
+                    if (match.Success)
+                    {
+                        string timestamp = match.Groups[1].Value;
+                        string nickname = match.Groups[2].Value;
+                        string messageText = match.Groups[3].Value;
+
+
+                        string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+                        Messages.Add(formattedMessage);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ошибка парсинга сообщения: " + m);
+                    }
                 }
             }
             else if (sender.us.command == "Accept")
@@ -535,7 +554,25 @@ namespace Whisper_Messenger.ViewModels
                     Messages.Clear();
                     foreach (var m in sender.us.chat)
                     {
-                        Messages.Add(m);
+                        Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+
+                        Match match = regex.Match(m);
+
+                        if (match.Success)
+                        {
+                            string timestamp = match.Groups[1].Value;
+                            string nickname = match.Groups[2].Value;
+                            string messageText = match.Groups[3].Value;
+
+
+                            string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+                            Messages.Add(formattedMessage);
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("Ошибка парсинга сообщения: " + m);
+                        }
                     }
                 }
             }
