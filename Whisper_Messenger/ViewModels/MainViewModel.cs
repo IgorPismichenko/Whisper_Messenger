@@ -304,35 +304,41 @@ namespace Whisper_Messenger.ViewModels
         
         private void Send(object o)
         {
-            User user = new User() { contact = CurrentContact, mess = "(" + DateTime.Now.ToString() + ") " + CurrentLogin + ": " + Sms, command = "Send" };
-
-            string messageToParse = user.mess;
-
-            Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
-
-            Match match = regex.Match(messageToParse);
-
-            if (match.Success)
+            if (CurrentContact != "")
             {
-                string timestamp = match.Groups[1].Value;
-                string nickname = match.Groups[2].Value;
-                string messageText = match.Groups[3].Value;
 
-             
-                string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+                User user = new User() { contact = CurrentContact, mess = "(" + DateTime.Now.ToString() + ") " + CurrentLogin + ": " + Sms, command = "Send" };
 
-                
-                Messages.Add(formattedMessage);
+                string messageToParse = user.mess;
+
+                Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+
+                Match match = regex.Match(messageToParse);
+
+                if (match.Success)
+                {
+                    string timestamp = match.Groups[1].Value;
+                    string nickname = match.Groups[2].Value;
+                    string messageText = match.Groups[3].Value;
+
+
+                    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+
+
+                    Messages.Add(formattedMessage);
+                }
+                else
+                {
+
+                    Console.WriteLine("Message format is invalid: " + messageToParse);
+                }
+
+
+                Sms = "";
+                sender.SendCommand(user, mRevent, MyEvent2);
+
             }
-            else
-            {
-               
-                Console.WriteLine("Message format is invalid: " + messageToParse);
-            }
-
-           
-            Sms = "";
-            sender.SendCommand(user, mRevent, MyEvent2);
+            
         }
 
         private bool CanSend(object o)
@@ -548,7 +554,7 @@ namespace Whisper_Messenger.ViewModels
                 }
             }
             messages.Clear();
-
+            CurrentContact = "";
         
 
         }
