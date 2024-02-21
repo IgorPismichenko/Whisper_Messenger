@@ -217,6 +217,8 @@
         <Setter Property="Background" Value="#FFC90E"></Setter>
         <Setter Property="Template">
 
+           
+            
             <Setter.Value>
                 <ControlTemplate>
                     <Border Background="{TemplateBinding Background}" Height="50" CornerRadius="5"
@@ -235,12 +237,13 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+       
     </Style>
 
 
 
 
-   
+
 
     <Style TargetType="ListBoxItem" x:Key="MessagesCard">
         <Setter Property="Background" Value="#7388A3"/>
@@ -282,7 +285,7 @@
                             Margin="2" 
                             Padding="6"
                             Width="Auto">
-                            <!--<Image Source="{Binding Image}"  Width="50" Height="50"></Image>-->
+                            <!--<Image Source="{Binding Image, Mode=TwoWay}" Width="50" Height="50"></Image>-->
                         </Border>
 
 
@@ -293,11 +296,16 @@
 
             </Setter.Value>
         </Setter>
+
+       
+        
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Background" Value="#BDB86E"/>
             </Trigger>
         </Style.Triggers>
+
+        
     </Style>
 
 

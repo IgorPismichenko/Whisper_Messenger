@@ -71,6 +71,14 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                         <i:InvokeCommandAction Command="{Binding OnChangeCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Удалить контакт из списка контактов" Command="{Binding DeleteUserFromContactClick}"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+
+
+
             </ListBox>
 
 

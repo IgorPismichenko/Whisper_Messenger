@@ -39,6 +39,7 @@ namespace Whisper_Messenger.ViewModels
             MyEvent += MyEventHandler;
             MyEvent2 += MyEventHandler2;
             CurrentLogin = "login";
+            //CurrentContact = "";
             //CurrentPass = "password";
             CurrentPhone = "phone";
             CurrentSearch = "search";
@@ -235,6 +236,7 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _ReadProfileCommand;
         private DelegateCommand _DeleteProfileCommand;
         private DelegateCommand _SendFileCommand;
+        private DelegateCommand _DeleteUserFromContact;
         public ICommand RegButtonClick
         {
             get
@@ -516,6 +518,44 @@ namespace Whisper_Messenger.ViewModels
         private bool CanSendFile(object o)
         {
             return true;
+        }
+
+        public ICommand DeleteUserFromContactClick
+        {
+            get
+            {
+                if (_DeleteUserFromContact == null)
+                {
+                    _DeleteUserFromContact = new DelegateCommand(DeleteUser, CanDeleteUser);
+                }
+                return _DeleteUserFromContact;
+            }
+        }
+        private void DeleteUser(object o)
+        {
+           
+            User user1 = new User() { command = "DeleteUser" , contact = CurrentContact };
+            sender.SendCommand(user1, mRevent, MyEvent2);
+
+
+        
+            foreach (var user in Contacts)
+            {
+                if (user.contact == CurrentContact)
+                {
+                    Contacts.Remove(user);
+                    break; 
+                }
+            }
+            messages.Clear();
+
+        
+
+        }
+        private bool CanDeleteUser(object o)
+        {
+            return true;
+
         }
         public void MyEventHandler()
         {

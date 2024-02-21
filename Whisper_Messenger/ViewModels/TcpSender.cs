@@ -33,7 +33,7 @@ namespace Whisper_Messenger.ViewModels
             {
                 try
                 {
-                    IPAddress ipAddr = IPAddress.Parse("26.208.70.215");
+                    IPAddress ipAddr = IPAddress.Parse("26.42.27.87");
                     IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 49152);
                     socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, 10000000);
@@ -156,6 +156,11 @@ namespace Whisper_Messenger.ViewModels
                         else if (user.command == "ProfileNotDeleted")
                         {
                             MessageBox.Show("Deleting profile failed! Try again");
+                        }
+                        else if(user.command == "successfulDeleted")
+                        {
+                            //ev.Set();
+                            MessageBox.Show("Успешно удаленно");
                         }
                     }
                 }
