@@ -195,6 +195,22 @@ namespace Whisper_Messenger.ViewModels
                 RaisePropertyChanged(nameof(CurrentUserAvatar));
             }
         }
+
+        BitmapImage currentMedia;
+        public BitmapImage CurrentMedia
+        {
+            get
+            {
+                return currentMedia;
+            }
+            set
+            {
+                currentMedia = value;
+                byte[] img = GetImageBytes(CurrentMediaPath);
+                currentMedia = ConvertBitmapFunc(img);
+                RaisePropertyChanged(nameof(CurrentMedia));
+            }
+        }
         [DataMember]
         private ObservableCollection<User>? contacts = new ObservableCollection<User>();
         [DataMember]
