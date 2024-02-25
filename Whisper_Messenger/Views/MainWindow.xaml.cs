@@ -4,8 +4,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -52,6 +52,21 @@ namespace Whisper_Messenger.Views
             {
                 PathTextBox.Text = openFileDialog.FileName;
                 PathTextBox.Focus();
+            }
+        }
+
+        private void ChooseFileClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Изображения (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|Все файлы (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                MediaPathTextBox.Text = openFileDialog.FileName;
+                MediaPathTextBox.Focus();
+                MediaPreview mediaPreview = new MediaPreview();
+                mediaPreview.man_event = man_event;
+                mediaPreview.DataContext = DataContext;
+                mediaPreview.Show();
             }
         }
         private void Close_Click(object sender, RoutedEventArgs e)

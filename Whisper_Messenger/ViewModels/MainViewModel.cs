@@ -46,7 +46,7 @@ namespace Whisper_Messenger.ViewModels
             Sms = "sms";
             IsButtonEnabled = true;
             sender = new TcpSender();
-            sender.ReceiveMessage(socket, MyEvent2);
+            sender.ReceiveMessage(socket, MyEvent2, mRevent);
         }
         #region Fields&Properties
         string currentLogin;
@@ -154,6 +154,20 @@ namespace Whisper_Messenger.ViewModels
             }
         }
 
+        string currentMediaPath;
+        public string CurrentMediaPath
+        {
+            get
+            {
+                return currentMediaPath;
+            }
+            set
+            {
+                currentMediaPath = value;
+                RaisePropertyChanged(nameof(CurrentMediaPath));
+            }
+        }
+
         string currentSearch;
         public string CurrentSearch
         {
@@ -196,9 +210,9 @@ namespace Whisper_Messenger.ViewModels
                 RaisePropertyChanged(nameof(Contacts));
             }
         }
-        private ObservableCollection<string>? messages = new ObservableCollection<string>();
+        private ObservableCollection<Chat>? messages = new ObservableCollection<Chat>();
 
-        public ObservableCollection<string> Messages
+        public ObservableCollection<Chat> Messages
         {
             get
             {
@@ -307,36 +321,44 @@ namespace Whisper_Messenger.ViewModels
             if (CurrentContact != "")
             {
 
-                User user = new User() { contact = CurrentContact, mess = "(" + DateTime.Now.ToString() + ") " + CurrentLogin + ": " + Sms, command = "Send" };
-
-                string messageToParse = user.mess;
-
-                Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
-
-                Match match = regex.Match(messageToParse);
-
-                if (match.Success)
-                {
-                    string timestamp = match.Groups[1].Value;
-                    string nickname = match.Groups[2].Value;
-                    string messageText = match.Groups[3].Value;
-
-
-                    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
-
-
-                    Messages.Add(formattedMessage);
-                }
-                else
-                {
-
-                    Console.WriteLine("Message format is invalid: " + messageToParse);
-                }
-
-
+                User user = new User();
+                user.contact = CurrentContact;
+                user.command = "Send";
+                user.mess = Sms;
+                user.data = DateTime.Now.Date.ToString();
+                Chat c = new Chat();
+                c.message = Sms;
+                c.date = user.data;
+                c.visibleText = Visibility.Visible;
+                c.visibleMedia = Visibility.Hidden;
+                Messages.Add(c);
                 Sms = "";
                 sender.SendCommand(user, mRevent, MyEvent2);
 
+                //string messageToParse = user.mess;
+
+                //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+
+                //Match match = regex.Match(messageToParse);
+
+                //if (match.Success)
+                //{
+                //    string timestamp = match.Groups[1].Value;
+                //    string nickname = match.Groups[2].Value;
+                //    string messageText = match.Groups[3].Value;
+
+
+                //    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+
+                //    Chat c = new Chat();
+                //    c.message = formattedMessage;
+                //    Messages.Add(c);
+                //}
+                //else
+                //{
+
+                //    Console.WriteLine("Message format is invalid: " + messageToParse);
+                //}
             }
             
         }
@@ -519,10 +541,27 @@ namespace Whisper_Messenger.ViewModels
 
         private void SendFile(object o)
         {
-
+            if(CurrentMediaPath != null)
+            {
+                byte[] img = GetImageBytes(CurrentMediaPath);
+                if(img != null)
+                {
+                    User user = new User() { contact = CurrentContact, data = DateTime.Now.Date.ToString(), media = img, path = Path.GetFileName(CurrentMediaPath), command = "Send" };
+                    Chat c = new Chat();
+                    c.media = img;
+                    c.date = user.data;
+                    c.visibleText = Visibility.Hidden;
+                    c.visibleMedia = Visibility.Visible;
+                    Messages.Add(c);
+                    sender.SendCommand(user, mRevent, MyEvent2);
+                    CurrentMediaPath = "";
+                }
+            }
         }
         private bool CanSendFile(object o)
         {
+            if (CurrentMediaPath == "")
+                return false;
             return true;
         }
 
@@ -567,27 +606,37 @@ namespace Whisper_Messenger.ViewModels
         {
             if (sender.us.command == "Chat")
             {
+                Messages.Clear();
                 foreach (var m in sender.us.chat)
                 {
-                    Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
-
-                    Match match = regex.Match(m);
-
-                    if (match.Success)
+                    if(m.media == null)
                     {
-                        string timestamp = match.Groups[1].Value;
-                        string nickname = match.Groups[2].Value;
-                        string messageText = match.Groups[3].Value;
-
-
-                        string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
-                        Messages.Add(formattedMessage);
-
+                        m.visibleMedia = Visibility.Hidden;
                     }
-                    else
+                    else if(m.message == null)
                     {
-                        Console.WriteLine("Ошибка парсинга сообщения: " + m);
+                        m.visibleText = Visibility.Hidden;
                     }
+                    Messages.Add(m);
+                    //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+
+                    //Match match = regex.Match(m.message);
+
+                    //if (match.Success)
+                    //{
+                    //    string timestamp = match.Groups[1].Value;
+                    //    string nickname = match.Groups[2].Value;
+                    //    string messageText = match.Groups[3].Value;
+
+
+                    //    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+                    //    m.message = formattedMessage;
+                    //    Messages.Add(m);
+                    //}
+                    //else
+                    //{
+                    //    Console.WriteLine("Ошибка парсинга сообщения: " + m);
+                    //}
                 }
             }
             else if (sender.us.command == "Accept")
@@ -650,24 +699,34 @@ namespace Whisper_Messenger.ViewModels
                     Messages.Clear();
                     foreach (var m in sender.us.chat)
                     {
-                        Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
-
-                        Match match = regex.Match(m);
-
-                        if (match.Success)
+                        if (m.media == null)
                         {
-                            string timestamp = match.Groups[1].Value;
-                            string nickname = match.Groups[2].Value;
-                            string messageText = match.Groups[3].Value;
+                            m.visibleMedia = Visibility.Hidden;
+                        }
+                        else if (m.message == null)
+                        {
+                            m.visibleText = Visibility.Hidden;
+                        }
+                        Messages.Add(m);
+                        //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+
+                        //Match match = regex.Match(m.message);
+
+                        //if (match.Success)
+                        //{
+                        //    string timestamp = match.Groups[1].Value;
+                        //    string nickname = match.Groups[2].Value;
+                        //    string messageText = match.Groups[3].Value;
 
 
-                            string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
-                            Messages.Add(formattedMessage);
+                        //    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+                        //    m.message = formattedMessage;
+                            //Messages.Add(m);
 
                             notifier = new PopupNotifier();
                             notifier.BodyColor = Color.Yellow;
-                            notifier.TitleText = nickname;
-                            notifier.ContentText = messageText;
+                            notifier.TitleText = m.chatContact;
+                            notifier.ContentText = m.message;
 
                             notifier.TitleFont = new Font("Arial", 20);
 
@@ -677,11 +736,11 @@ namespace Whisper_Messenger.ViewModels
 
                             notifier.Popup();
 
-                        }
-                        else
-                        {
-                            Console.WriteLine("Ошибка парсинга сообщения: " + m);
-                        }
+                        //}
+                        //else
+                        //{
+                        //    Console.WriteLine("Ошибка парсинга сообщения: " + m);
+                        //}
                     }
                 }
             }
@@ -707,6 +766,7 @@ namespace Whisper_Messenger.ViewModels
         }
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
+        #region MyFunctions
         private byte[] GetImageBytes(string p)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -729,5 +789,6 @@ namespace Whisper_Messenger.ViewModels
                 return bitmap;
             }
         }
+        #endregion
     }
 }

@@ -33,7 +33,7 @@ namespace Whisper_Messenger.ViewModels
             {
                 try
                 {
-                    IPAddress ipAddr = IPAddress.Parse("26.42.27.87");
+                    IPAddress ipAddr = IPAddress.Parse("26.208.70.215");
                     IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 49152);
                     socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, 10000000);
@@ -159,7 +159,6 @@ namespace Whisper_Messenger.ViewModels
                         }
                         else if(user.command == "successfulDeleted")
                         {
-                            //ev.Set();
                             MessageBox.Show("Успешно удаленно");
                         }
                     }
@@ -171,8 +170,8 @@ namespace Whisper_Messenger.ViewModels
             });
         }
         #endregion
-
-        public async void ReceiveMessage(Socket sListener, Action ev)
+        #region Chat
+        public async void ReceiveMessage(Socket sListener, Action ev, ManualResetEvent e)
         {
             await Task.Run(() =>
             {
@@ -187,7 +186,7 @@ namespace Whisper_Messenger.ViewModels
                     while (true)
                     {
                         Socket handler = sListener.Accept();
-                        Receive(handler, ev);
+                        Receive(handler, ev, e);
                     }
                 }
                 catch (Exception ex)
@@ -196,7 +195,7 @@ namespace Whisper_Messenger.ViewModels
                 }
             });
         }
-        public async void Receive(Socket socket, Action ev)
+        public async void Receive(Socket socket, Action ev, ManualResetEvent e)
         {
             await Task.Run(() =>
             {
@@ -224,6 +223,7 @@ namespace Whisper_Messenger.ViewModels
                         {
                             ev?.Invoke();
                         });
+                        e.Set();
                     }
                 }
                 catch (Exception ex)
@@ -232,35 +232,6 @@ namespace Whisper_Messenger.ViewModels
                 }
             });
         }
-
-        //public async Task Receive(Socket socket, Action ev)
-        //{
-        //    try
-        //    {
-        //        User user = new User();
-        //        DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(User));
-        //        byte[] buffer = new byte[10000000];
-
-        //        using (MemoryStream stream = new MemoryStream())
-        //        {
-        //            int bytesRead;
-        //            while ((bytesRead = await socket.ReceiveAsync(buffer, SocketFlags.None)) > 0)
-        //            {
-        //                stream.Write(buffer, 0, bytesRead);
-        //                stream.Seek(0, SeekOrigin.Begin);
-        //                user = (User)jsonFormatter.ReadObject(stream);
-        //                stream.SetLength(0);
-        //                us = user;
-        //                Application.Current.Dispatcher.Invoke(() => ev?.Invoke());
-        //            }
-        //        }
-        //        socket.Shutdown(SocketShutdown.Both);
-        //        socket.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Клиент-sms.receive: " + ex.Message);
-        //    }
-        //}
+        #endregion
     }
 }

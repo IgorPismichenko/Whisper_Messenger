@@ -24,6 +24,10 @@ namespace Whisper_Messenger.Models
         [DataMember]
         public string? mess { get; set; }
         [DataMember]
+        public string? data { get; set; }
+        [DataMember]
+        public string? path { get; set; }
+        [DataMember]
         public string? contact;
         [DataMember]
         public string? Contact
@@ -39,9 +43,11 @@ namespace Whisper_Messenger.Models
             }
         }
         [DataMember]
-        public List<string>? chat { get; set; }
+        public List<Chat>? chat { get; set; }
         [DataMember]
         public byte[] avatar { get; set; }
+        [DataMember]
+        public byte[] media { get; set; }
         [DataMember]
         public List<Profile>? profile { get; set; }
         [IgnoreDataMember]
@@ -68,15 +74,5 @@ namespace Whisper_Messenger.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public event PropertyChangedEventHandler PropertyChanged;
-    }
-    [DataContract]
-    public class Profile
-    {
-        [DataMember]
-        public string? login { get; set; }
-        [DataMember]
-        public byte[]? avatar { get; set; }
-        [DataMember]
-        public string? phone { get; set; }
     }
 }
