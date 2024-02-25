@@ -162,6 +162,14 @@ namespace Whisper_Messenger.ViewModels
                             //ev.Set();
                             MessageBox.Show("Успешно удаленно");
                         }
+                        else if (user.command == "successfulDeletedSms")
+                        {
+                            MessageBox.Show("Сообщение успешно удаленно");
+                        }
+                        else if (user.command == "failedDeletedSms")
+                        {
+                            MessageBox.Show("Что-то не так (");
+                        }
                     }
                 }
                 catch (Exception ex)

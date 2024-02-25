@@ -74,6 +74,8 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                 <ListBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Удалить контакт из списка контактов" Command="{Binding DeleteUserFromContactClick}"/>
+                      
+
                     </ContextMenu>
                 </ListBox.ContextMenu>
 
@@ -181,8 +183,17 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
 
             </Grid>
             <ListBox Name="MessBox" Grid.Row="1" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-     ScrollViewer.VerticalScrollBarVisibility="Disabled" 
-                ItemsSource="{Binding Messages}"  ItemContainerStyle="{StaticResource MessagesCard}"></ListBox>
+            ScrollViewer.VerticalScrollBarVisibility="Disabled" SelectedItem="{Binding CurrentSms, Mode=TwoWay}"
+                ItemsSource="{Binding Messages}"  ItemContainerStyle="{StaticResource MessagesCard}">
+
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Удалить сообщение" Command="{Binding DeleteSmsClick}"/>
+
+
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="2" Background="{DynamicResource contactPart}">

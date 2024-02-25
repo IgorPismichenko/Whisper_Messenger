@@ -18,6 +18,7 @@ using Whisper_Messenger.Commands;
 using Whisper_Messenger.Models;
 using Tulpep.NotificationWindow;
 using System.Windows.Documents;
+using System.Globalization;
 
 namespace Whisper_Messenger.ViewModels
 {
@@ -168,6 +169,20 @@ namespace Whisper_Messenger.ViewModels
             }
         }
 
+        string currentSms;
+        public string CurrentSms
+        {
+            get
+            {
+                return currentSms;
+            }
+            set
+            {
+                currentSms = value;
+                RaisePropertyChanged(nameof(CurrentSms));
+            }
+        }
+
         BitmapImage currentUserAvatar;
         public BitmapImage CurrentUserAvatar
         {
@@ -237,6 +252,8 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _DeleteProfileCommand;
         private DelegateCommand _SendFileCommand;
         private DelegateCommand _DeleteUserFromContact;
+        private DelegateCommand _DeleteSmsCommand;
+
         public ICommand RegButtonClick
         {
             get
@@ -307,31 +324,34 @@ namespace Whisper_Messenger.ViewModels
             if (CurrentContact != "")
             {
 
-                User user = new User() { contact = CurrentContact, mess = "(" + DateTime.Now.ToString() + ") " + CurrentLogin + ": " + Sms, command = "Send" };
+                string timestamp = DateTime.Now.ToString();
+                string formattedSms = $"{CurrentLogin}: {Sms} {timestamp}";
 
-                string messageToParse = user.mess;
+                User user = new User() { contact = CurrentContact, mess = formattedSms, command = "Send" };
 
-                Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+                //string messageToParse = user.mess;
 
-                Match match = regex.Match(messageToParse);
+                //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
 
-                if (match.Success)
-                {
-                    string timestamp = match.Groups[1].Value;
-                    string nickname = match.Groups[2].Value;
-                    string messageText = match.Groups[3].Value;
+                //Match match = regex.Match(messageToParse);
+
+                //if (match.Success)
+                //{
+                    //string timestamp = match.Groups[1].Value;
+                    //string nickname = match.Groups[2].Value;
+                    //string messageText = match.Groups[3].Value;
 
 
-                    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+                    string formattedMessage = $"{CurrentLogin}: {Sms} \n{timestamp}";
 
 
                     Messages.Add(formattedMessage);
-                }
-                else
-                {
+                //}
+                //else
+                //{
 
-                    Console.WriteLine("Message format is invalid: " + messageToParse);
-                }
+                //    Console.WriteLine("Message format is invalid: " + messageToParse);
+                //}
 
 
                 Sms = "";
@@ -563,31 +583,80 @@ namespace Whisper_Messenger.ViewModels
             return true;
 
         }
+
+
+        public ICommand DeleteSmsClick
+        {
+            get
+            {
+                if (_DeleteSmsCommand == null)
+                {
+                    _DeleteSmsCommand = new DelegateCommand(DeleteSms, CanDeleteSms);
+                }
+                return _DeleteSmsCommand;
+            }
+        }
+
+        private void DeleteSms(object o)
+        {
+            
+
+            string messageForDelete = CurrentSms.Replace("\n", "");
+
+            User user = new User() { command = "DeleteSms", mess = messageForDelete };
+            sender.SendCommand(user, mRevent, MyEvent2);
+
+
+            foreach (var message in Messages.ToList())
+            {
+                if (user.mess == messageForDelete) 
+                {
+
+                    Messages.Remove(message);
+                    break; 
+                }
+            }
+            //if (user.mess == CurrentSms)
+            //{
+            //    Messages.Remove(user);
+            //}
+            //CurrentSms = "";
+
+
+        }
+
+
+
+        private bool CanDeleteSms(object o)
+        {
+            return true;
+
+        }
         public void MyEventHandler()
         {
             if (sender.us.command == "Chat")
             {
                 foreach (var m in sender.us.chat)
                 {
-                    Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
+                    //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
 
-                    Match match = regex.Match(m);
+                    //Match match = regex.Match(m);
 
-                    if (match.Success)
-                    {
-                        string timestamp = match.Groups[1].Value;
-                        string nickname = match.Groups[2].Value;
-                        string messageText = match.Groups[3].Value;
+                    //if (match.Success)
+                    //{
+                    //    string timestamp = match.Groups[1].Value;
+                    //    string nickname = match.Groups[2].Value;
+                    //    string messageText = match.Groups[3].Value;
 
 
-                        string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
-                        Messages.Add(formattedMessage);
+                    //    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
+                        Messages.Add(m);
 
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ошибка парсинга сообщения: " + m);
-                    }
+                    //}
+                    //else
+                    //{
+                    //    Console.WriteLine("Ошибка парсинга сообщения: " + m);
+                    //}
                 }
             }
             else if (sender.us.command == "Accept")
