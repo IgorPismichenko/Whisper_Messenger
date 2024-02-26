@@ -164,6 +164,8 @@ namespace Whisper_Messenger.ViewModels
             set
             {
                 currentMediaPath = value;
+                byte[] img = GetImageBytes(CurrentMediaPath);
+                currentMedia = ConvertBitmapFunc(img);
                 RaisePropertyChanged(nameof(CurrentMediaPath));
             }
         }
@@ -206,8 +208,6 @@ namespace Whisper_Messenger.ViewModels
             set
             {
                 currentMedia = value;
-                byte[] img = GetImageBytes(CurrentMediaPath);
-                currentMedia = ConvertBitmapFunc(img);
                 RaisePropertyChanged(nameof(CurrentMedia));
             }
         }
@@ -560,6 +560,8 @@ namespace Whisper_Messenger.ViewModels
             if(CurrentMediaPath != null)
             {
                 byte[] img = GetImageBytes(CurrentMediaPath);
+                CurrentMedia = ConvertBitmapFunc(img);
+                MessageBox.Show("Is there a picture?");
                 if(img != null)
                 {
                     User user = new User() { contact = CurrentContact, data = DateTime.Now.Date.ToString(), media = img, path = Path.GetFileName(CurrentMediaPath), command = "Send" };
@@ -570,14 +572,13 @@ namespace Whisper_Messenger.ViewModels
                     c.visibleMedia = Visibility.Visible;
                     Messages.Add(c);
                     sender.SendCommand(user, mRevent, MyEvent2);
-                    CurrentMediaPath = "";
                 }
             }
         }
         private bool CanSendFile(object o)
         {
-            if (CurrentMediaPath == "")
-                return false;
+            //if (CurrentMediaPath == null /*|| CurrentContact == null*/)
+            //    return false;
             return true;
         }
 

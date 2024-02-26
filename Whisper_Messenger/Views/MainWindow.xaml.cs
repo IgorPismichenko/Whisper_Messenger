@@ -61,12 +61,12 @@ namespace Whisper_Messenger.Views
             openFileDialog.Filter = "Изображения (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|Все файлы (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
-                MediaPathTextBox.Text = openFileDialog.FileName;
-                MediaPathTextBox.Focus();
                 MediaPreview mediaPreview = new MediaPreview();
                 mediaPreview.man_event = man_event;
                 mediaPreview.DataContext = DataContext;
                 mediaPreview.Show();
+                mediaPreview.MediaPathTextBox.Text = openFileDialog.FileName;
+                mediaPreview.MediaPathTextBox.Focus();
             }
         }
         private void Close_Click(object sender, RoutedEventArgs e)
