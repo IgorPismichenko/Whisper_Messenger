@@ -183,6 +183,20 @@ namespace Whisper_Messenger.ViewModels
             }
         }
 
+        string currentOnline;
+        public string CurrentOnline
+        {
+            get
+            {
+                return currentOnline;
+            }
+            set
+            {
+                currentOnline = value;
+                RaisePropertyChanged(nameof(CurrentOnline));
+            }
+        }
+
         BitmapImage currentUserAvatar;
         public BitmapImage CurrentUserAvatar
         {
@@ -297,7 +311,7 @@ namespace Whisper_Messenger.ViewModels
         }
         private void Log(object o)
         {
-            User user = new User() { login = CurrentLogin, password = CurrentPass, command = "Login" };
+            User user = new User() { login = CurrentLogin, password = CurrentPass, command = "Login", online  = "online"};
             sender.SendCommand(user, mRevent, MyEvent);
         }
         private bool CanLog(object o)
@@ -668,6 +682,7 @@ namespace Whisper_Messenger.ViewModels
             }
             else if (sender.us.command == "AcceptLog")
             {
+                CurrentOnline = sender.us.online;
                 CurrentPhone = sender.us.phone;
                 if (sender.us.avatar != null)
                 {
@@ -765,6 +780,17 @@ namespace Whisper_Messenger.ViewModels
                         {
                             c.Image = ConvertBitmapFunc(sender.us.avatar);
                         }
+                    }
+                }
+            }
+            else if((sender.us.command == "ContactIsOnline"))
+            {
+                foreach (var c in Contacts)
+                {
+                    if (c.Contact == sender.us.mess)
+                    {
+                        c.Contact = sender.us.online;
+                     
                     }
                 }
             }

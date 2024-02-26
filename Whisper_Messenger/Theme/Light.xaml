@@ -6,6 +6,7 @@
     <SolidColorBrush Color="#BA9329" x:Key="contactPart"/>
     <SolidColorBrush Color="#EAD98B" x:Key="smsAndSearchTextBox"/>
     <SolidColorBrush Color="Black" x:Key="nickname"/>
+    <SolidColorBrush Color="Black" x:Key="sendSms"/>
 
 
     <!--Here styles and templates for log in and register-->

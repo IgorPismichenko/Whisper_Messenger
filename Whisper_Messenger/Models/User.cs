@@ -25,6 +25,9 @@ namespace Whisper_Messenger.Models
         public string? mess { get; set; }
         [DataMember]
         public string? contact;
+
+        [DataMember]
+        public string? online { get; set; }
         [DataMember]
         public string? Contact
         {

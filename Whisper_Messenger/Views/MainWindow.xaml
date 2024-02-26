@@ -154,12 +154,23 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
         </Grid>
         <Grid Grid.Column="1" Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="35"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <Label Content="{Binding SelectedContactNickname}"  Name="Contacts"  FontSize="16" Margin="7,0,5,5" FontWeight="Bold"
-     BorderBrush="Transparent" Background="Transparent" Foreground="{DynamicResource nickname}"/>
+            
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="350"/>
+                    <ColumnDefinition Width="150"/>
+
+                </Grid.ColumnDefinitions>
+
+                <Label Content="{Binding SelectedContactNickname}" Grid.Column="0" Name="Contacts"  FontSize="16" Margin="7,0,5,5" FontWeight="Bold"
+                BorderBrush="Transparent" Background="Transparent" Foreground="{DynamicResource nickname}"/>
+                <Label Grid.Column="2" Content="{Binding CurrentOnline}" FontSize="22" Foreground="Green"></Label>
+            </Grid>
+           
 
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
@@ -169,7 +180,7 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                 </Grid.ColumnDefinitions>
                 <TextBox Name="sms" Margin="2,2,2,2"  Style="{DynamicResource TextBoxStyleForMainWindow}" Grid.Column="1"
                  Background="{DynamicResource smsAndSearchTextBox}" Text="{Binding Sms}" GotFocus="SmsInFocus" ></TextBox>
-                
+
                 <Button Name="SendButton"  Grid.Column="2" Foreground="{DynamicResource sendSms}" FontSize="25"  
                 Background="Transparent" BorderBrush="Transparent"  Content="➤"
                 Style="{StaticResource NoHoverButtonStyle}" Command="{Binding SendButtonClick}" IsEnabled="{Binding IsButtonEnabled}"></Button>
