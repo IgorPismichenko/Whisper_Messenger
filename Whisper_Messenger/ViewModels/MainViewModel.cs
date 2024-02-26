@@ -787,11 +787,11 @@ namespace Whisper_Messenger.ViewModels
             {
                 foreach (var c in Contacts)
                 {
-                    if (c.Contact == sender.us.mess)
-                    {
-                        c.Contact = sender.us.online;
+                    //if (c.Contact == sender.us.mess)
+                    //{
+                    c.Contact = sender.us.online;
                      
-                    }
+                    //}
                 }
             }
         }

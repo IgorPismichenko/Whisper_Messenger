@@ -233,6 +233,10 @@
                             <StackPanel>
                                 <Label Content="{Binding Contact, Mode=TwoWay}"  Foreground="Black" Margin="10,5,0,0" FontSize="20"></Label>
                             </StackPanel>
+                            <StackPanel>
+                                <Label Grid.Column="2" Content="{Binding CurrentOnline}" FontSize="16" Foreground="Green"></Label>
+
+                            </StackPanel>
                         </StackPanel>
                     </Border>
                 </ControlTemplate>
