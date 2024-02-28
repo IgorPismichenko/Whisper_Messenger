@@ -23,6 +23,7 @@ namespace Whisper_Messenger.Views
         public ManualResetEvent man_event;
         public SynchronizationContext uiContext;
         SoundPlayer soundPlayer;
+        MediaPreview mediaPreview;
         public static bool isDarkTheme = false;
         public MainWindow()
         {
@@ -61,7 +62,7 @@ namespace Whisper_Messenger.Views
             openFileDialog.Filter = "Изображения (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|Все файлы (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
-                MediaPreview mediaPreview = new MediaPreview();
+                mediaPreview = new MediaPreview();
                 mediaPreview.man_event = man_event;
                 mediaPreview.DataContext = DataContext;
                 mediaPreview.Show();
@@ -102,7 +103,10 @@ namespace Whisper_Messenger.Views
                 try
                 {
                     man_event.WaitOne();
-                    uiContext.Send(d => FormClosingFunc(), null);
+                    if (mediaPreview == null)
+                    {
+                        uiContext.Send(d => FormClosingFunc(), null);
+                    }
 
                 }
                 catch (Exception ex)

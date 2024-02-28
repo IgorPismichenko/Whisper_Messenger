@@ -46,7 +46,7 @@ namespace Whisper_Messenger.ViewModels
             Sms = "sms";
             IsButtonEnabled = true;
             sender = new TcpSender();
-            sender.ReceiveMessage(socket, MyEvent2, mRevent);
+            sender.ReceiveMessage(socket, MyEvent2);
         }
         #region Fields&Properties
         string currentLogin;
@@ -164,9 +164,9 @@ namespace Whisper_Messenger.ViewModels
             set
             {
                 currentMediaPath = value;
-                byte[] img = GetImageBytes(CurrentMediaPath);
-                currentMedia = ConvertBitmapFunc(img);
                 RaisePropertyChanged(nameof(CurrentMediaPath));
+                byte[] img = GetImageBytes(currentMediaPath);
+                CurrentMedia = ConvertBitmapFunc(img);
             }
         }
 
@@ -345,8 +345,9 @@ namespace Whisper_Messenger.ViewModels
                 Chat c = new Chat();
                 c.message = Sms;
                 c.date = user.data;
-                c.visibleText = Visibility.Visible;
-                c.visibleMedia = Visibility.Hidden;
+                c.chatContact = CurrentLogin;
+                c.VisibleText = Visibility.Visible;
+                c.VisibleMedia = Visibility.Collapsed;
                 Messages.Add(c);
                 Sms = "";
                 sender.SendCommand(user, mRevent, MyEvent2);
@@ -378,7 +379,6 @@ namespace Whisper_Messenger.ViewModels
             }
             
         }
-
         private bool CanSend(object o)
         {
             if (Sms == "")
@@ -560,18 +560,19 @@ namespace Whisper_Messenger.ViewModels
             if(CurrentMediaPath != null)
             {
                 byte[] img = GetImageBytes(CurrentMediaPath);
-                CurrentMedia = ConvertBitmapFunc(img);
-                MessageBox.Show("Is there a picture?");
                 if(img != null)
                 {
                     User user = new User() { contact = CurrentContact, data = DateTime.Now.Date.ToString(), media = img, path = Path.GetFileName(CurrentMediaPath), command = "Send" };
                     Chat c = new Chat();
                     c.media = img;
                     c.date = user.data;
-                    c.visibleText = Visibility.Hidden;
-                    c.visibleMedia = Visibility.Visible;
+                    c.chatContact = CurrentLogin;
+                    c.VisibleText = Visibility.Collapsed;
+                    c.VisibleMedia = Visibility.Visible;
                     Messages.Add(c);
                     sender.SendCommand(user, mRevent, MyEvent2);
+                    mRevent.Set();
+                    CurrentMedia = null;
                 }
             }
         }
@@ -628,11 +629,11 @@ namespace Whisper_Messenger.ViewModels
                 {
                     if(m.media == null)
                     {
-                        m.visibleMedia = Visibility.Hidden;
+                        m.VisibleMedia = Visibility.Collapsed;
                     }
-                    else if(m.message == null)
+                    if(m.message == null)
                     {
-                        m.visibleText = Visibility.Hidden;
+                        m.VisibleText = Visibility.Collapsed;
                     }
                     Messages.Add(m);
                     //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
@@ -718,11 +719,11 @@ namespace Whisper_Messenger.ViewModels
                     {
                         if (m.media == null)
                         {
-                            m.visibleMedia = Visibility.Hidden;
+                            m.VisibleMedia = Visibility.Collapsed;
                         }
-                        else if (m.message == null)
+                        if (m.message == null)
                         {
-                            m.visibleText = Visibility.Hidden;
+                            m.VisibleText = Visibility.Collapsed;
                         }
                         Messages.Add(m);
                         //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");

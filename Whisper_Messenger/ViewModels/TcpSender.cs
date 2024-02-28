@@ -171,7 +171,7 @@ namespace Whisper_Messenger.ViewModels
         }
         #endregion
         #region Chat
-        public async void ReceiveMessage(Socket sListener, Action ev, ManualResetEvent e)
+        public async void ReceiveMessage(Socket sListener, Action ev)
         {
             await Task.Run(() =>
             {
@@ -186,7 +186,7 @@ namespace Whisper_Messenger.ViewModels
                     while (true)
                     {
                         Socket handler = sListener.Accept();
-                        Receive(handler, ev, e);
+                        Receive(handler, ev);
                     }
                 }
                 catch (Exception ex)
@@ -195,7 +195,7 @@ namespace Whisper_Messenger.ViewModels
                 }
             });
         }
-        public async void Receive(Socket socket, Action ev, ManualResetEvent e)
+        public async void Receive(Socket socket, Action ev)
         {
             await Task.Run(() =>
             {
@@ -223,7 +223,6 @@ namespace Whisper_Messenger.ViewModels
                         {
                             ev?.Invoke();
                         });
-                        e.Set();
                     }
                 }
                 catch (Exception ex)

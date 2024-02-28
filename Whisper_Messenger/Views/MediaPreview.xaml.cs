@@ -43,11 +43,14 @@ namespace Whisper_Messenger.Views
                 try
                 {
                     man_event.WaitOne();
-                    uiContext.Send(d => FormClosingFunc(), null);
+                    if (this.IsVisible)
+                    {
+                        uiContext.Send(d => FormClosingFunc(), null);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Клиент-formM-Function: " + ex.Message);
+                    MessageBox.Show("Клиент-formMP-Function: " + ex.Message);
                 }
             });
         }
@@ -65,7 +68,7 @@ namespace Whisper_Messenger.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Клиент-formM: " + ex.Message);
+                MessageBox.Show("Клиент-formMP: " + ex.Message);
             }
         }
     }

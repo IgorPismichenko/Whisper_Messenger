@@ -183,21 +183,32 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Messages}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Margin="5" Padding="10" BorderBrush="Gray" BorderThickness="1">
+                        <DataTemplate>
                             <StackPanel>
-                                <StackPanel Visibility="{Binding MediaVisibility}">
-                                    <TextBlock Text="{Binding chatContact}" FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding message}"/>
-                                    <TextBlock Text="{Binding date}"/>
-                                </StackPanel>
-                                <StackPanel Visibility="{Binding MediaVisibility}">
-                                    <Image Source="{Binding media}" Width="100" Height="100" Margin="5" />
-                                    <TextBlock Text="{Binding date}"/>
-                                </StackPanel>
+                                <WrapPanel Visibility="{Binding VisibleText, Mode=TwoWay}">
+                                    <StackPanel>
+                                        <Border CornerRadius="5 5 5 0" Margin="5" Padding="10" BorderBrush="Gray" BorderThickness="2">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding chatContact}" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding message}"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <TextBlock Text="{Binding date}" TextAlignment="Justify"/>
+                                    </StackPanel>
+                                </WrapPanel>
+                                <WrapPanel Visibility="{Binding VisibleMedia, Mode=TwoWay}">
+                                    <StackPanel>
+                                        <Border CornerRadius="5 5 5 0" Margin="5" Padding="10" BorderBrush="Gray" BorderThickness="2" >
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding chatContact}" FontWeight="Bold"/>
+                                                <Image Source="{Binding media}" Width="100" Height="100" Margin="5" />
+                                            </StackPanel>
+                                        </Border>
+                                        <TextBlock Text="{Binding date}" TextAlignment="Justify"/>
+                                    </StackPanel>
+                                </WrapPanel>
                             </StackPanel>
-                        </Border>
-                    </DataTemplate>
+                        </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             </ScrollViewer>
