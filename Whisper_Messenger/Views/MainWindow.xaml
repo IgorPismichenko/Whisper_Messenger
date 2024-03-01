@@ -2,6 +2,7 @@
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        
         Title="MainWindow" Height="450" Width="950" WindowStyle="None" Icon="/photo_2023-12-18_16-19-13.jpg"
 AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
     <!--<Window.Resources>
@@ -30,10 +31,12 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                     <Button Width="20" Height="20" Content="🗕" Background="Transparent"
                     BorderThickness="0" BorderBrush="Transparent" Click="Minimize_Click"></Button>
+                   
                     <Button Width="20" Height="20" Content="🗖" Background="Transparent"
                 BorderThickness="0" BorderBrush="Transparent" Click="Maximize_Click"></Button>
+                    
                     <Button Width="20" Height="20" Content="🗙" Background="Transparent"
-                BorderThickness="0" BorderBrush="Transparent" Click="Close_Click"></Button>
+                BorderThickness="0" BorderBrush="Transparent" Command="{Binding CloseClick}" ></Button>
                 </StackPanel>
             </Grid>
         </Border>

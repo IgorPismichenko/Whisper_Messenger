@@ -19,6 +19,7 @@ using Whisper_Messenger.Models;
 using Tulpep.NotificationWindow;
 using System.Windows.Documents;
 using System.Globalization;
+using System.Windows.Controls;
 
 namespace Whisper_Messenger.ViewModels
 {
@@ -267,6 +268,7 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _SendFileCommand;
         private DelegateCommand _DeleteUserFromContact;
         private DelegateCommand _DeleteSmsCommand;
+        private DelegateCommand _CloseCommand;
 
         public ICommand RegButtonClick
         {
@@ -284,7 +286,7 @@ namespace Whisper_Messenger.ViewModels
             if (CurrentPhone.Length == 10)
             {
                 defImg = GetImageBytes("photo_2023-12-18_16-19-13.jpg");
-                User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, avatar = defImg, command = "Register" };
+                User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, avatar = defImg, command = "Register", online = "online" };
                 sender.SendCommand(user, mRevent, MyEvent);
             }
             else
@@ -646,6 +648,34 @@ namespace Whisper_Messenger.ViewModels
             return true;
 
         }
+
+
+        public ICommand CloseClick
+        {
+            get
+            {
+                if (_CloseCommand == null)
+                {
+                    _CloseCommand = new DelegateCommand(Close, CanClose);
+                }
+                return _CloseCommand;
+                
+            }
+        }
+        private void Close(object o)
+        {
+            User user = new User() { login = CurrentLogin, command = "CloseCommand", online  = "offline" };
+            sender.SendCommand(user, mRevent, MyEvent2);
+
+            
+        }
+        private bool CanClose(object o)
+        {
+          
+            return true;
+        }
+
+        
         public void MyEventHandler()
         {
             if (sender.us.command == "Chat")
@@ -724,6 +754,11 @@ namespace Whisper_Messenger.ViewModels
                 }
                 CurrentLogin = sender.us.login;
             }
+            else if (sender.us.command == "statusSaved")
+            {
+                MessageBox.Show("fff");
+                CurrentOnline = sender.us.online;
+            }
         }
         public void MyEventHandler2()
         {
@@ -790,7 +825,7 @@ namespace Whisper_Messenger.ViewModels
                     //if (c.Contact == sender.us.mess)
                     //{
                     c.Contact = sender.us.online;
-                     
+                    c.Contact = sender.us.login;
                     //}
                 }
             }

@@ -60,6 +60,8 @@ namespace Whisper_Messenger.ViewModels
                     jsonFormatter.WriteObject(stream, user);
                     msg = stream.ToArray();
                     socket.Send(msg);
+
+
                     stream.Close();
                     ReceiveData(user, a, ev);
                 }
@@ -76,6 +78,7 @@ namespace Whisper_Messenger.ViewModels
                 try
                 {
                     byte[] bytes = new byte[10000000];
+
                     int bytesRec = 0;
                     while (true)
                     {
