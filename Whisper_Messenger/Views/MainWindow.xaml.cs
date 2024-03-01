@@ -72,9 +72,16 @@ namespace Whisper_Messenger.Views
         }
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            sock.Shutdown(SocketShutdown.Both);
-            sock.Close();
-            this.Close();
+            try
+            {
+                sock.Shutdown(SocketShutdown.Both);
+                sock.Close();
+                this.Close();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Клиент-formM-closing: " + ex.Message);
+            }
         }
         private void Minimize_Click(object sender, RoutedEventArgs e)
         {

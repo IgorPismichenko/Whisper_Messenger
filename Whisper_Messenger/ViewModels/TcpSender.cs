@@ -36,8 +36,8 @@ namespace Whisper_Messenger.ViewModels
                     IPAddress ipAddr = IPAddress.Parse("26.208.70.215");
                     IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 49152);
                     socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, 10000000);
-                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer, 10000000);
+                    socket.SendBufferSize = 1000000;
+                    socket.ReceiveBufferSize = 1000000;
                     socket.Connect(ipEndPoint);
                 }
                 catch (Exception ex)
@@ -179,13 +179,15 @@ namespace Whisper_Messenger.ViewModels
                 {
                     IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Any, 49153);
                     sListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    sListener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, 10000000);
-                    sListener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer, 10000000);
+                    sListener.ReceiveBufferSize = 1000000;
+                    sListener.SendBufferSize = 1000000;
                     sListener.Bind(ipEndPoint);
                     sListener.Listen();
                     while (true)
                     {
                         Socket handler = sListener.Accept();
+                        handler.SendBufferSize = 1000000;
+                        handler.ReceiveBufferSize = 1000000;
                         Receive(handler, ev);
                     }
                 }
