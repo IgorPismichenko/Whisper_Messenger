@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
+   
     <SolidColorBrush Color="#FCD221" x:Key="MainBackgroundColorReg"/>
     <SolidColorBrush Color="#E3B431" x:Key="MainBackgroundColor"/>
     <SolidColorBrush Color="#BA9329" x:Key="contactPart"/>
@@ -226,17 +226,19 @@
                      Margin="8,2,8,2">
                         <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
 
-                            <Border Width="40" Height="40" CornerRadius="25">
-                                <Image Width="40" Height="40" Source="{Binding Image, Mode=TwoWay}">
+                            <Border CornerRadius="25" BorderThickness="3" >
+                                <Image Width="40" Height="40" Source="{Binding Image, Mode=TwoWay}" Stretch="Uniform">
                                 </Image>
                             </Border>
                             <StackPanel>
                                 <Label Content="{Binding Contact, Mode=TwoWay}"  Foreground="Black" Margin="10,5,0,0" FontSize="20"></Label>
-                            </StackPanel>
-                            <StackPanel>
-                                <Label Grid.Column="2" Content="{Binding CurrentOnline}" FontSize="16" Foreground="Green"></Label>
+                                
 
                             </StackPanel>
+                            <StackPanel>
+                                <Label Content="{Binding CurrentOnline}" Foreground="Black"/>
+                            </StackPanel>
+                            
                         </StackPanel>
                     </Border>
                 </ControlTemplate>

@@ -11,6 +11,8 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
 
 
 </Window.Resources>-->
+  
+
 
 
     <Grid Background="{DynamicResource MainBackgroundColor}">
@@ -171,6 +173,7 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
 
                 <Label Content="{Binding SelectedContactNickname}" Grid.Column="0" Name="Contacts"  FontSize="16" Margin="7,0,5,5" FontWeight="Bold"
                 BorderBrush="Transparent" Background="Transparent" Foreground="{DynamicResource nickname}"/>
+                
             </Grid>
            
 

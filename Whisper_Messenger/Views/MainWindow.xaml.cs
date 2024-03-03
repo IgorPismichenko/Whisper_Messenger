@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Whisper_Messenger.ViewModels;
 
 namespace Whisper_Messenger.Views
 {
@@ -27,6 +28,7 @@ namespace Whisper_Messenger.Views
         public MainWindow()
         {
             InitializeComponent();
+            
             man_event = new ManualResetEvent(false);
             uiContext = SynchronizationContext.Current;
             PlayOnStart();

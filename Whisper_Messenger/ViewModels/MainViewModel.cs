@@ -42,7 +42,7 @@ namespace Whisper_Messenger.ViewModels
             MyEvent2 += MyEventHandler2;
             CurrentLogin = "login";
             //CurrentContact = "";
-            //CurrentPass = "password";
+            CurrentOnline = "";
             CurrentPhone = "phone";
             CurrentSearch = "search";
             Sms = "sms";
@@ -286,7 +286,7 @@ namespace Whisper_Messenger.ViewModels
             if (CurrentPhone.Length == 10)
             {
                 defImg = GetImageBytes("photo_2023-12-18_16-19-13.jpg");
-                User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, avatar = defImg, command = "Register", online = "online" };
+                User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, avatar = defImg, command = "Register", online = "green" };
                 sender.SendCommand(user, mRevent, MyEvent);
             }
             else
@@ -313,7 +313,7 @@ namespace Whisper_Messenger.ViewModels
         }
         private void Log(object o)
         {
-            User user = new User() { login = CurrentLogin, password = CurrentPass, command = "Login", online  = "online"};
+            User user = new User() { login = CurrentLogin, password = CurrentPass, command = "Login", online  = "green"};
             sender.SendCommand(user, mRevent, MyEvent);
         }
         private bool CanLog(object o)
@@ -664,7 +664,7 @@ namespace Whisper_Messenger.ViewModels
         }
         private void Close(object o)
         {
-            User user = new User() { login = CurrentLogin, command = "CloseCommand", online  = "offline" };
+            User user = new User() { login = CurrentLogin, command = "CloseCommand", online  = "red" };
             sender.SendCommand(user, mRevent, MyEvent2);
 
             
@@ -754,11 +754,11 @@ namespace Whisper_Messenger.ViewModels
                 }
                 CurrentLogin = sender.us.login;
             }
-            else if (sender.us.command == "statusSaved")
-            {
-                MessageBox.Show("fff");
-                CurrentOnline = sender.us.online;
-            }
+            //else if (sender.us.command == "statusSaved")
+            //{
+            //    MessageBox.Show("fff");
+            //    CurrentOnline = sender.us.online;
+            //}
         }
         public void MyEventHandler2()
         {
@@ -822,12 +822,13 @@ namespace Whisper_Messenger.ViewModels
             {
                 foreach (var c in Contacts)
                 {
-                    //if (c.Contact == sender.us.mess)
-                    //{
-                    c.Contact = sender.us.online;
-                    c.Contact = sender.us.login;
-                    //}
+                    if (c.Contact == sender.us.login)
+                    {
+                        CurrentOnline = sender.us.online;
+                        MessageBox.Show(CurrentOnline);
+                    }
                 }
+               
             }
         }
 
