@@ -235,9 +235,7 @@
                                 
 
                             </StackPanel>
-                            <StackPanel>
-                                <Label Content="{Binding CurrentOnline}" Foreground="Black"/>
-                            </StackPanel>
+                           
                             
                         </StackPanel>
                     </Border>

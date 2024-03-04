@@ -436,6 +436,7 @@ namespace Whisper_Messenger.ViewModels
         private void Change(object o)
         {
             Messages.Clear();
+            CurrentOnline = "";
             temp = CurrentContact;
             User user = new User() { contact = CurrentContact, command = "Update" };
             sender.SendCommand(user, mRevent, MyEvent);
@@ -666,7 +667,7 @@ namespace Whisper_Messenger.ViewModels
         {
             User user = new User() { login = CurrentLogin, command = "CloseCommand", online  = "red" };
             sender.SendCommand(user, mRevent, MyEvent2);
-
+            CurrentOnline = "";
             
         }
         private bool CanClose(object o)
@@ -756,8 +757,9 @@ namespace Whisper_Messenger.ViewModels
             }
             //else if (sender.us.command == "statusSaved")
             //{
-            //    MessageBox.Show("fff");
             //    CurrentOnline = sender.us.online;
+            //    MessageBox.Show(CurrentOnline);
+               
             //}
         }
         public void MyEventHandler2()
@@ -766,7 +768,7 @@ namespace Whisper_Messenger.ViewModels
             {
                 if (CurrentContact == sender.us.login)
                 {
-                    Messages.Clear();
+                    //Messages.Clear();
                     foreach (var m in sender.us.chat)
                     {
                         Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
@@ -824,8 +826,9 @@ namespace Whisper_Messenger.ViewModels
                 {
                     if (c.Contact == sender.us.login)
                     {
+                        
                         CurrentOnline = sender.us.online;
-                        MessageBox.Show(CurrentOnline);
+                        MessageBox.Show(c.contact + " is " + CurrentOnline);
                     }
                 }
                
