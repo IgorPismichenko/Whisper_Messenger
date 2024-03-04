@@ -198,6 +198,18 @@ namespace Whisper_Messenger.ViewModels
             }
         }
 
+        string selectedContactStatus;
+
+        public string SelectedContactStatus
+        {
+            get { return selectedContactStatus; }
+            set
+            {
+                selectedContactStatus = value;
+                RaisePropertyChanged(nameof(SelectedContactStatus));
+            }
+        }
+
         BitmapImage currentUserAvatar;
         public BitmapImage CurrentUserAvatar
         {
@@ -696,12 +708,30 @@ namespace Whisper_Messenger.ViewModels
 
                     //    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
                         Messages.Add(m);
-
+                    
                     //}
                     //else
                     //{
                     //    Console.WriteLine("Ошибка парсинга сообщения: " + m);
                     //}
+                }
+                foreach (var c in Contacts)
+                {
+                    if (c.Contact == sender.us.login)
+                    {
+
+                        CurrentOnline = sender.us.online;
+                        if (CurrentOnline == "red")
+                        {
+                            SelectedContactStatus = "offline ⚫";
+                        }
+                        else
+                        {
+                            SelectedContactStatus = "online ⚫";
+
+                        }
+
+                    }
                 }
             }
             else if (sender.us.command == "Accept")
@@ -828,7 +858,15 @@ namespace Whisper_Messenger.ViewModels
                     {
                         
                         CurrentOnline = sender.us.online;
-                        MessageBox.Show(c.contact + " is " + CurrentOnline);
+                        if (CurrentOnline == "red")
+                        {
+                            SelectedContactStatus = "offline ⚫";
+                        }
+                        else
+                        {
+                            SelectedContactStatus = "online ⚫";
+
+                        }
                     }
                 }
                
