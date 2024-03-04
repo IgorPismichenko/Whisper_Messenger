@@ -620,6 +620,14 @@ namespace Whisper_Messenger.ViewModels
             return true;
 
         }
+
+        private void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+        #region EventHandlers
         public void MyEventHandler()
         {
             if (sender.us.command == "Chat")
@@ -777,12 +785,6 @@ namespace Whisper_Messenger.ViewModels
                 }
             }
         }
-
-        private void RaisePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
         #endregion
         #region MyFunctions
         private byte[] GetImageBytes(string p)

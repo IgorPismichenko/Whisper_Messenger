@@ -33,11 +33,12 @@ namespace Whisper_Messenger.ViewModels
             {
                 try
                 {
+                    byte[] buf = new byte[1000000];
                     IPAddress ipAddr = IPAddress.Parse("26.208.70.215");
                     IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 49152);
                     socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    socket.SendBufferSize = 1000000;
-                    socket.ReceiveBufferSize = 1000000;
+                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buf);
+                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer, buf);
                     socket.Connect(ipEndPoint);
                 }
                 catch (Exception ex)
@@ -177,17 +178,18 @@ namespace Whisper_Messenger.ViewModels
             {
                 try
                 {
+                    byte[] buf = new byte[1000000];
                     IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Any, 49153);
                     sListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    sListener.ReceiveBufferSize = 1000000;
-                    sListener.SendBufferSize = 1000000;
+                    sListener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buf);
+                    sListener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer, buf);
                     sListener.Bind(ipEndPoint);
                     sListener.Listen();
                     while (true)
                     {
                         Socket handler = sListener.Accept();
-                        handler.SendBufferSize = 1000000;
-                        handler.ReceiveBufferSize = 1000000;
+                        handler.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buf);
+                        handler.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer, buf);
                         Receive(handler, ev);
                     }
                 }
