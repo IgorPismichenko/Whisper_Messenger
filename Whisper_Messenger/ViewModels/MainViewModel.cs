@@ -43,8 +43,8 @@ namespace Whisper_Messenger.ViewModels
             //CurrentPass = "password";
             CurrentPhone = "phone";
             CurrentSearch = "search";
-            Sms = "";
-            CurrentContact = "";
+            //Sms = "";
+            //CurrentContact = "";
             IsButtonEnabled = true;
             sender = new TcpSender();
             sender.ReceiveMessage(socket, MyEvent2);
@@ -382,7 +382,7 @@ namespace Whisper_Messenger.ViewModels
         }
         private bool CanSend(object o)
         {
-            if (Sms == "" && CurrentContact == "")
+            if (Sms == "")
                 return false;
             return true;
         }
@@ -721,7 +721,7 @@ namespace Whisper_Messenger.ViewModels
         {
             if (sender.us.command == "SendingMessage")
             {
-                if (CurrentContact == sender.us.login)
+                if (CurrentContact == sender.us.c.chatContact)
                 {
                     //foreach (var m in sender.us.chat)
                     //{
