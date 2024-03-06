@@ -29,6 +29,8 @@ namespace Whisper_Messenger.Models
         [DataMember]
         public string? online { get; set; }
         [DataMember]
+        public bool? block;
+        [DataMember]
         public string? Contact
         {
             get

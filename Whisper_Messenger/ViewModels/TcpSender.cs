@@ -163,6 +163,7 @@ namespace Whisper_Messenger.ViewModels
                         else if(user.command == "successfulDeleted")
                         {
                             //ev.Set();
+
                             MessageBox.Show("Успешно удаленно");
                         }
                         else if (user.command == "successfulDeletedSms")
@@ -173,6 +174,40 @@ namespace Whisper_Messenger.ViewModels
                         {
                             MessageBox.Show("Что-то не так (");
                         }
+                        else if (user.command == "BlockIsSuccessful")
+                        {
+                            us = user;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                a?.Invoke();
+                            });
+                        }
+                        else if (user.command == "UserInBlackList")
+                        {
+                            us = user;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                a?.Invoke();
+                            });
+                        }
+                        else if( user.command == "UnblockIsSuccessful")
+                        {
+
+                            us = user;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                a?.Invoke();
+                            });
+                        }
+                        else if(user.command == "CantBeBlock")
+                        {
+                            us = user;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                a?.Invoke();
+                            });
+                        }
+
                     }
                 }
                 catch (Exception ex)

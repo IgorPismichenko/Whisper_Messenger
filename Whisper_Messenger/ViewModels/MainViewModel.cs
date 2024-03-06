@@ -20,6 +20,7 @@ using Tulpep.NotificationWindow;
 using System.Windows.Documents;
 using System.Globalization;
 using System.Windows.Controls;
+using System.Runtime.CompilerServices;
 
 namespace Whisper_Messenger.ViewModels
 {
@@ -210,6 +211,18 @@ namespace Whisper_Messenger.ViewModels
             }
         }
 
+        string isBlock;
+
+        public string IsBlock
+        {
+            get { return isBlock; }
+            set
+            {
+                isBlock = value;
+                RaisePropertyChanged(nameof(IsBlock));
+            }
+        }
+
         BitmapImage currentUserAvatar;
         public BitmapImage CurrentUserAvatar
         {
@@ -281,6 +294,8 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _DeleteUserFromContact;
         private DelegateCommand _DeleteSmsCommand;
         private DelegateCommand _CloseCommand;
+        private DelegateCommand _BlockContact;
+        private DelegateCommand _UnblockContact;
 
         public ICommand RegButtonClick
         {
@@ -370,7 +385,7 @@ namespace Whisper_Messenger.ViewModels
                     //string messageText = match.Groups[3].Value;
 
 
-                    string formattedMessage = $"{CurrentLogin}: {Sms} \n{timestamp}";
+                    string formattedMessage = $"{CurrentLogin}: {Sms} {timestamp}";
 
 
                     Messages.Add(formattedMessage);
@@ -654,8 +669,6 @@ namespace Whisper_Messenger.ViewModels
 
         }
 
-
-
         private bool CanDeleteSms(object o)
         {
             return true;
@@ -688,11 +701,54 @@ namespace Whisper_Messenger.ViewModels
             return true;
         }
 
-        
+        public ICommand BlockContact
+        {
+            get
+            {
+                if (_BlockContact == null)
+                {
+                    _BlockContact = new DelegateCommand(Block, CanBlock);
+                }
+                return _BlockContact;
+            }
+        }
+        private void Block(object o)
+        {
+            User user = new User() { command = "BlockContact" , contact = CurrentContact };
+            sender.SendCommand(user, mRevent, MyEvent2);
+        }
+        private bool CanBlock(object o)
+        {
+           
+            return true;
+        }
+
+        public ICommand UnblockContact
+        {
+            get
+            {
+                if (_UnblockContact == null)
+                {
+                    _UnblockContact = new DelegateCommand(Unblock, CanUnblock);
+                }
+                return _UnblockContact;
+            }
+        }
+        private void Unblock(object o)
+        {
+            User user = new User() { command = "UnblockContact", contact = CurrentContact };
+            sender.SendCommand(user, mRevent, MyEvent2);
+        }
+        private bool CanUnblock(object o)
+        {
+
+            return true;
+        }
         public void MyEventHandler()
         {
             if (sender.us.command == "Chat")
             {
+                IsBlock = "";
                 foreach (var m in sender.us.chat)
                 {
                     //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
@@ -708,7 +764,7 @@ namespace Whisper_Messenger.ViewModels
 
                     //    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
                         Messages.Add(m);
-                    
+
                     //}
                     //else
                     //{
@@ -719,7 +775,11 @@ namespace Whisper_Messenger.ViewModels
                 {
                     if (c.Contact == sender.us.login)
                     {
-
+                        if (sender.us.avatar != null)
+                        {
+                            sender.us.Image = ConvertBitmapFunc(sender.us.avatar);
+                        }
+                       
                         CurrentOnline = sender.us.online;
                         if (CurrentOnline == "red")
                         {
@@ -733,6 +793,12 @@ namespace Whisper_Messenger.ViewModels
 
                     }
                 }
+                if (sender.us.block != null)
+                {
+                    IsBlock = "☹";
+                }
+
+
             }
             else if (sender.us.command == "Accept")
             {
@@ -785,12 +851,38 @@ namespace Whisper_Messenger.ViewModels
                 }
                 CurrentLogin = sender.us.login;
             }
-            //else if (sender.us.command == "statusSaved")
-            //{
-            //    CurrentOnline = sender.us.online;
-            //    MessageBox.Show(CurrentOnline);
-               
-            //}
+            else if (sender.us.command == "BlockIsSuccessful")
+            {
+                MessageBox.Show("Контакт заблокирован!", "Заблокировано", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                if (sender.us.block == true)
+                {
+                    IsBlock = "☹";
+                }
+            }
+            else if(sender.us.command == "UserInBlackList")
+            {
+                if(sender.us.contact == SelectedContactNickname)
+                {
+                    MessageBox.Show("Сообщение не будет доставленно так как Вы заблокировали контакта " + CurrentContact);
+
+                }
+                else if(sender.us.login == CurrentLogin)
+                {
+                    MessageBox.Show("Сообщение не будет доставленно так как Вы в черном списке " + CurrentContact);
+                }
+            }
+            else if (sender.us.command == "UnblockIsSuccessful")
+            {
+                MessageBox.Show("Контакт разблокирован!", "Разблокированно", MessageBoxButton.OK, MessageBoxImage.Information);
+                IsBlock = "";
+            }
+            else if (sender.us.command == "CantBeBlock")
+            {
+                MessageBox.Show("Контакт не может быть заблокирован так как уже в чёрном списке!", "", MessageBoxButton.OK, MessageBoxImage.Information);
+                
+            }
+            
         }
         public void MyEventHandler2()
         {
@@ -850,13 +942,13 @@ namespace Whisper_Messenger.ViewModels
                     }
                 }
             }
-            else if((sender.us.command == "ContactIsOnline"))
+            else if ((sender.us.command == "ContactIsOnline"))
             {
                 foreach (var c in Contacts)
                 {
                     if (c.Contact == sender.us.login)
                     {
-                        
+
                         CurrentOnline = sender.us.online;
                         if (CurrentOnline == "red")
                         {
@@ -869,8 +961,18 @@ namespace Whisper_Messenger.ViewModels
                         }
                     }
                 }
-               
+
             }
+
+            else if (sender.us.command == "BlockIsSuccessful")
+            {
+                MessageBox.Show("Контакт заблокирован!", "Заблокировано", MessageBoxButton.OK, MessageBoxImage.Warning);
+                if (sender.us.block == true)
+                {
+                    IsBlock = "☹";
+                }
+            }
+
         }
 
         private void RaisePropertyChanged(string propertyName)
