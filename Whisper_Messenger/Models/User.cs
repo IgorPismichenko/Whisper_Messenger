@@ -65,6 +65,8 @@ namespace Whisper_Messenger.Models
                 RaisePropertyChanged(nameof(Image));
             }
         }
+        [DataMember]
+        public Chat? c { get; set; }
         public override string ToString()
         {
             return contact;

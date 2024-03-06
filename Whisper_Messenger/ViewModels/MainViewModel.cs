@@ -43,7 +43,8 @@ namespace Whisper_Messenger.ViewModels
             //CurrentPass = "password";
             CurrentPhone = "phone";
             CurrentSearch = "search";
-            Sms = "sms";
+            Sms = "";
+            CurrentContact = "";
             IsButtonEnabled = true;
             sender = new TcpSender();
             sender.ReceiveMessage(socket, MyEvent2);
@@ -381,7 +382,7 @@ namespace Whisper_Messenger.ViewModels
         }
         private bool CanSend(object o)
         {
-            if (Sms == "")
+            if (Sms == "" && CurrentContact == "")
                 return false;
             return true;
         }
@@ -722,18 +723,17 @@ namespace Whisper_Messenger.ViewModels
             {
                 if (CurrentContact == sender.us.login)
                 {
-                    Messages.Clear();
-                    foreach (var m in sender.us.chat)
-                    {
-                        if (m.media == null)
+                    //foreach (var m in sender.us.chat)
+                    //{
+                        if (sender.us.c.media == null)
                         {
-                            m.VisibleMedia = Visibility.Collapsed;
+                        sender.us.c.VisibleMedia = Visibility.Collapsed;
                         }
-                        if (m.message == null)
+                        if (sender.us.c.message == null)
                         {
-                            m.VisibleText = Visibility.Collapsed;
+                        sender.us.c.VisibleText = Visibility.Collapsed;
                         }
-                        Messages.Add(m);
+                        Messages.Add(sender.us.c);
                         //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
 
                         //Match match = regex.Match(m.message);
@@ -751,8 +751,8 @@ namespace Whisper_Messenger.ViewModels
 
                             notifier = new PopupNotifier();
                             notifier.BodyColor = Color.Yellow;
-                            notifier.TitleText = m.chatContact;
-                            notifier.ContentText = m.message;
+                            notifier.TitleText = sender.us.c.chatContact;
+                            notifier.ContentText = sender.us.c.message;
 
                             notifier.TitleFont = new Font("Arial", 20);
 
@@ -767,7 +767,7 @@ namespace Whisper_Messenger.ViewModels
                         //{
                         //    Console.WriteLine("Ошибка парсинга сообщения: " + m);
                         //}
-                    }
+                    //}
                 }
             }
             else if (sender.us.command == "ContactProfileChanged")
