@@ -862,14 +862,16 @@ namespace Whisper_Messenger.ViewModels
             }
             else if(sender.us.command == "UserInBlackList")
             {
-                if(sender.us.contact == SelectedContactNickname)
+               
+                if(sender.us.login == CurrentLogin)
                 {
                     MessageBox.Show("Сообщение не будет доставленно так как Вы заблокировали контакта " + CurrentContact);
-
+                   
                 }
-                else if(sender.us.login == CurrentLogin)
+                if (sender.us.contact== CurrentLogin)
                 {
-                    MessageBox.Show("Сообщение не будет доставленно так как Вы в черном списке " + CurrentContact);
+                    CurrentOnline = sender.us.online;
+
                 }
             }
             else if (sender.us.command == "UnblockIsSuccessful")
