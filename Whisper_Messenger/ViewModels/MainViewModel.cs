@@ -796,8 +796,15 @@ namespace Whisper_Messenger.ViewModels
                 if (sender.us.block != null)
                 {
                     IsBlock = "☹";
-                }
+                    
+                    
 
+                }
+                if (sender.us.online == "black")
+                {
+                    CurrentOnline = sender.us.online;
+                    SelectedContactStatus = "offline ⚫";
+                }
 
             }
             else if (sender.us.command == "Accept")
@@ -868,9 +875,9 @@ namespace Whisper_Messenger.ViewModels
                     MessageBox.Show("Сообщение не будет доставленно так как Вы заблокировали контакта " + CurrentContact);
                    
                 }
-                if (sender.us.contact== CurrentLogin)
+                if (sender.us.contact == CurrentLogin)
                 {
-                    CurrentOnline = sender.us.online;
+                    MessageBox.Show("Сообщение не будет доставленно так как Вы в черном списке " );
 
                 }
             }
@@ -884,7 +891,32 @@ namespace Whisper_Messenger.ViewModels
                 MessageBox.Show("Контакт не может быть заблокирован так как уже в чёрном списке!", "", MessageBoxButton.OK, MessageBoxImage.Information);
                 
             }
-            
+            else if ((sender.us.command == "ContactIsOnline"))
+            {
+                foreach (var c in Contacts)
+                {
+                    if (c.Contact == sender.us.login)
+                    {
+
+                        CurrentOnline = sender.us.online;
+                        if (CurrentOnline == "red")
+                        {
+                            SelectedContactStatus = "offline ⚫";
+                        }
+                        else if (CurrentOnline == "green")
+                        {
+                            SelectedContactStatus = "online ⚫";
+
+                        }
+                        else if (CurrentOnline == "black")
+                        {
+                            SelectedContactStatus = "offline ⚫";
+
+                        }
+                    }
+                }
+
+            }
         }
         public void MyEventHandler2()
         {
@@ -956,9 +988,14 @@ namespace Whisper_Messenger.ViewModels
                         {
                             SelectedContactStatus = "offline ⚫";
                         }
-                        else
+                        else if(CurrentOnline == "green")
                         {
                             SelectedContactStatus = "online ⚫";
+
+                        }
+                        else if (CurrentOnline == "black")
+                        {
+                            SelectedContactStatus = "offline ⚫";
 
                         }
                     }
