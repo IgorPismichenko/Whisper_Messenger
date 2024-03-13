@@ -875,7 +875,7 @@ namespace Whisper_Messenger.ViewModels
                     MessageBox.Show("Сообщение не будет доставленно так как Вы заблокировали контакта " + CurrentContact);
                    
                 }
-                if (sender.us.contact == CurrentLogin)
+                if (sender.us.contact == CurrentContact)
                 {
                     MessageBox.Show("Сообщение не будет доставленно так как Вы в черном списке " );
 
