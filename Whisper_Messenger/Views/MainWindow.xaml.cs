@@ -24,7 +24,7 @@ namespace Whisper_Messenger.Views
         public ManualResetEvent man_event;
         public SynchronizationContext uiContext;
         SoundPlayer soundPlayer;
-        public static bool isDarkTheme = false;
+        //public static bool isDarkTheme = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -124,26 +124,27 @@ namespace Whisper_Messenger.Views
             soundPlayer.Play();
         }
 
-        private void ChangeTheme_Click(object sender, RoutedEventArgs e)
-        {
-            isDarkTheme = !isDarkTheme;
-            ApplyTheme();
-            //Application.Current.Properties["ThemeChoice"] = isDarkTheme ? "Dark" : "Light";
+        //private void ChangeTheme_Click(object sender, RoutedEventArgs e)
+        //{
+        //    isDarkTheme = !isDarkTheme;
+        //    ApplyTheme();
+           
+        //    //Application.Current.Properties["ThemeChoice"] = isDarkTheme ? "Dark" : "Light";
 
-        }
+        //}
 
-        public void ApplyTheme()
-        {
-            if (isDarkTheme)
-            {
-                ChangeTheme.ThemeChange(new Uri("Theme/Light.xaml", UriKind.Relative));
-            }
-            else
-            {
-                ChangeTheme.ThemeChange(new Uri("Theme/Dark.xaml", UriKind.Relative));
+        //public void ApplyTheme()
+        //{
+        //    if (isDarkTheme)
+        //    {
+        //        ChangeTheme.ThemeChange(new Uri("Theme/Light.xaml", UriKind.Relative));
+        //    }
+        //    else
+        //    {
+        //        ChangeTheme.ThemeChange(new Uri("Theme/Dark.xaml", UriKind.Relative));
 
-            }
-        }
+        //    }
+        //}
         private void InputLogCheck(object sender, TextCompositionEventArgs e)
         {
             string str = "qwertyuioasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789._@";

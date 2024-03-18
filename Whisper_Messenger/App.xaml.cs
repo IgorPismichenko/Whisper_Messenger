@@ -20,7 +20,10 @@ namespace Whisper_Messenger
             auth.DataContext = viewModel;
             auth.sock = viewModel.sender.socket;
             auth.Show();
+            
         }
+        
+
     }
 
 }

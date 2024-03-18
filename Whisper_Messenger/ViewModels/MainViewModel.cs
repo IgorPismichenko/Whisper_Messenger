@@ -35,7 +35,9 @@ namespace Whisper_Messenger.ViewModels
         public event Action MyEvent2;
         string temp;
         byte[] defImg;
+
         private PopupNotifier notifier = null;
+        public static bool isDarkTheme = false;
         public MainViewModel(ManualResetEvent ev)
         {
             mRevent = ev;
@@ -63,6 +65,7 @@ namespace Whisper_Messenger.ViewModels
             {
                 currentLogin = value;
                 RaisePropertyChanged(nameof(CurrentLogin));
+
             }
         }
 
@@ -296,7 +299,29 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _CloseCommand;
         private DelegateCommand _BlockContact;
         private DelegateCommand _UnblockContact;
+        private DelegateCommand _ChangeTheme;
+        public ICommand ChangeTheme_Click
+        {
 
+            get
+            {
+                if (_ChangeTheme == null)
+                {
+                    _ChangeTheme = new DelegateCommand(Theme, CanTheme);
+                }
+                return _ChangeTheme;
+            }
+        }
+        private void Theme(object o)
+        {
+            isDarkTheme = !isDarkTheme;
+            ApplyTheme();
+           
+        }
+        private bool CanTheme(object o)
+        {
+            return true;
+        }
         public ICommand RegButtonClick
         {
             get
@@ -1040,6 +1065,19 @@ namespace Whisper_Messenger.ViewModels
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.EndInit();
                 return bitmap;
+            }
+        }
+        public void ApplyTheme()
+        {
+            if (isDarkTheme)
+            {
+
+                ChangeTheme.ThemeChange(new Uri("Theme/Light.xaml", UriKind.Relative));
+            }
+            else
+            {
+                ChangeTheme.ThemeChange(new Uri("Theme/Dark.xaml", UriKind.Relative));
+
             }
         }
     }
