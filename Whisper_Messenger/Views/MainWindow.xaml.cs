@@ -1,9 +1,11 @@
 ﻿using Microsoft.Win32;
+using System.IO;
 using System.Media;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -11,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 using Whisper_Messenger.ViewModels;
 
 namespace Whisper_Messenger.Views
@@ -24,9 +27,15 @@ namespace Whisper_Messenger.Views
         public ManualResetEvent man_event;
         public SynchronizationContext uiContext;
         SoundPlayer soundPlayer;
-        //public static bool isDarkTheme = false;
+        public static bool isDarkTheme;
+        public string theme = "Light";
+        public static readonly string ThemeKey = "AppTheme";
+        public static readonly string SettingsFilePath = "appsettings.xml";
+
         public MainWindow()
         {
+
+            LoadSettings();
             InitializeComponent();
             
             man_event = new ManualResetEvent(false);
@@ -110,6 +119,7 @@ namespace Whisper_Messenger.Views
                     register.DataContext = DataContext;
                     register.sock = sock;
                     register.Show();
+                   
                     this.Close();
                 }
             }
@@ -124,27 +134,57 @@ namespace Whisper_Messenger.Views
             soundPlayer.Play();
         }
 
-        //private void ChangeTheme_Click(object sender, RoutedEventArgs e)
-        //{
-        //    isDarkTheme = !isDarkTheme;
-        //    ApplyTheme();
+        private void ChangeTheme_Click(object sender, RoutedEventArgs e)
+        {
+            isDarkTheme = !isDarkTheme;
+            //theme = (theme == "Light") ? "Dark" : "Light";
+            ApplyTheme();
+            SaveSettings();
+            //Application.Current.Resources[ThemeKey] = isDarkTheme ? "Dark" : "Light";
+            Application.Current.Properties[ThemeKey] = isDarkTheme ? "Dark" : "Light";
            
-        //    //Application.Current.Properties["ThemeChoice"] = isDarkTheme ? "Dark" : "Light";
+        }
+        private void SaveSettings()
+        {
 
-        //}
+            AppSettings settings = new AppSettings();
+            settings.Theme = isDarkTheme ? "Dark" : "Light";
 
-        //public void ApplyTheme()
-        //{
-        //    if (isDarkTheme)
-        //    {
-        //        ChangeTheme.ThemeChange(new Uri("Theme/Light.xaml", UriKind.Relative));
-        //    }
-        //    else
-        //    {
-        //        ChangeTheme.ThemeChange(new Uri("Theme/Dark.xaml", UriKind.Relative));
+            XmlSerializer serializer = new XmlSerializer(typeof(AppSettings));
+            using (FileStream stream = new FileStream(SettingsFilePath, FileMode.Create))
+            {
+                serializer.Serialize(stream, settings);
+            }
+        }
+        private void LoadSettings()
+        {
+            if (File.Exists(SettingsFilePath))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(AppSettings));
+                using (FileStream stream = new FileStream(SettingsFilePath, FileMode.Open))
+                {
+                    AppSettings settings = (AppSettings)serializer.Deserialize(stream);
+                    isDarkTheme = settings.Theme == "Dark";
+                    ApplyTheme();
+                }
+            }
+        }
+        public void ApplyTheme()
+        {
+            if (isDarkTheme)
+            {
+                ChangeTheme.ThemeChange(new Uri("Theme/Light.xaml", UriKind.Relative));
+            }
+            else
+            {
+                ChangeTheme.ThemeChange(new Uri("Theme/Dark.xaml", UriKind.Relative));
 
-        //    }
-        //}
+            }
+
+        }
+       
+
+
         private void InputLogCheck(object sender, TextCompositionEventArgs e)
         {
             string str = "qwertyuioasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789._@";
@@ -161,5 +201,9 @@ namespace Whisper_Messenger.Views
                 e.Handled = true;
             }
         }
+    }
+    public class AppSettings
+    {
+        public string Theme { get; set; }
     }
 }

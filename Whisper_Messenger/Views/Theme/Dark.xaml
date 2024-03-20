@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
-    <SolidColorBrush Color="#FCD221" x:Key="MainBackgroundColorReg"/>
+    <SolidColorBrush Color=" #1A1F25" x:Key="MainBackgroundColorReg"/>
     <SolidColorBrush Color="#1A1F25" x:Key="MainBackgroundColor"/> 
     <SolidColorBrush Color="#FFC90E" x:Key="sendSms"/>
     <SolidColorBrush Color="#262D36" x:Key="contactPart"/>
@@ -27,35 +27,11 @@
 
 
     <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type Button}">
-        <Border BorderThickness="5" CornerRadius="25" Background="#1A1F25"  Name="Border">
+        <Border BorderThickness="5" CornerRadius="25" Background="#FCD221"  Name="Border">
 
             <Grid>
                 <Rectangle Name="FocusCue" Visibility="Hidden" Stroke="Black" StrokeThickness="5" StrokeDashArray="1 2"></Rectangle>
-                <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFFF00"/>
-            </Grid>
-
-
-        </Border>
-
-        <ControlTemplate.Triggers>
-
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="Border" Property="Width" Value="305" />
-                <Setter TargetName="Border" Property="Height" Value="58" />
-            </Trigger>
-
-
-        </ControlTemplate.Triggers>
-
-    </ControlTemplate>
-
-
-    <ControlTemplate x:Key="ButtonTemplate2" TargetType="{x:Type Button}">
-        <Border BorderThickness="1" CornerRadius="10" Background="#1A1F25"  Name="Border">
-
-            <Grid>
-                <Rectangle Name="FocusCue" Visibility="Hidden" Stroke="Black" StrokeThickness="5" StrokeDashArray="1 2"></Rectangle>
-                <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFFF00"/>
+                <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1A1F25"/>
             </Grid>
 
             <Border.Effect>
@@ -84,6 +60,39 @@
     </ControlTemplate>
 
 
+    <ControlTemplate x:Key="ButtonTemplate2" TargetType="{x:Type Button}">
+        <Border BorderThickness="1" CornerRadius="10" Background="#FCD221"  Name="Border">
+
+            <Grid>
+                <Rectangle Name="FocusCue" Visibility="Hidden" Stroke="Black" StrokeThickness="5" StrokeDashArray="1 2"></Rectangle>
+                <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#1A1F25"/>
+            </Grid>
+
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="10" BlurRadius="5" Color="#A9A9A9" Opacity="0.5" Direction="320" />
+            </Border.Effect>
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <EventTrigger RoutedEvent="Button.MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="Effect.ShadowDepth" To="10" Duration="0:0:0.1"/>
+                        <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="Effect.Opacity" To="0.5" Duration="0:0:0.1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Button.MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="Effect.ShadowDepth" To="0" Duration="0:0:0.1"/>
+                        <DoubleAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="Effect.Opacity" To="0" Duration="0:0:0.1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
 
     <ControlTemplate  x:Key="ButtonTemplate1" TargetType="Button">
         <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
@@ -97,19 +106,12 @@
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
             </Trigger>
-
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
 
 
-    <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FF1493"/>
-    <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA"/>
-    <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF1493"/>
-
-    <SolidColorBrush x:Key="PasswordBox.Static.Border" Color="#FF1493"/>
-    <SolidColorBrush x:Key="PasswordBox.MouseOver.Border" Color="#FF7EB4EA"/>
-    <SolidColorBrush x:Key="PasswordBox.Focus.Border" Color="#FF1493"/>
+   
 
     <Style x:Key="TextBoxStyle1" TargetType="{x:Type TextBox}">
         <Setter Property="Control.FontFamily" Value="Alpha"/>
@@ -127,7 +129,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border x:Name="border" CornerRadius="20"
-            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+             BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
                         <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -141,6 +143,7 @@
                         <Trigger Property="IsKeyboardFocused" Value="true">
                             <Setter Property="BorderBrush" TargetName="border" Value="#FF1493"/>
                         </Trigger>
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -157,7 +160,6 @@
         </Style.Triggers>
 
     </Style>
-
 
 
     <Style x:Key="PasswordBoxStyle1" TargetType="{x:Type PasswordBox}">
@@ -176,13 +178,14 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type PasswordBox}">
                     <Border x:Name="border" CornerRadius="20"
-        BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+         BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
                         <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Opacity" TargetName="border" Value="0.56"/>
                         </Trigger>
+                        
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="BorderBrush" TargetName="border" Value="#FF1493"/>
                         </Trigger>
@@ -206,7 +209,6 @@
         </Style.Triggers>
 
     </Style>
-
 
     <!--Next part for main window-->
 

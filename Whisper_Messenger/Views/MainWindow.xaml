@@ -65,7 +65,7 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
 
                 <Button Grid.Column="2" Background="Transparent" BorderBrush="Transparent"
                     Style="{StaticResource NoHoverButtonStyle}" Content="☽" FontSize="26" Margin="0,0,0,2" 
-                    Click="ChangeTheme_Click">  
+                    Click=" ChangeTheme_Click">  
 
                 </Button>
             </Grid>
@@ -141,7 +141,7 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
 
                         <StackPanel Orientation="Horizontal">
 
-                            <Button Content="save changes" Width="145" Height="40" Template="{StaticResource ButtonTemplate}"
+                            <Button Content="save changes" Width="140" Height="30" Template="{StaticResource ButtonTemplate2}"
                                 Command="{Binding ProfileButtonClick}" IsEnabled="{Binding IsButtonEnabled}"></Button>
                             <Button Content="del" Width="50" Height="30" Template="{StaticResource ButtonTemplate2}"
                                 Command="{Binding DeleteProfileButtonClick}" />
@@ -238,7 +238,7 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
 
             </Grid.RowDefinitions>
 
-            <Image Height="150" Width="150" Source="{Binding Image, Mode=TwoWay}" Stretch="Uniform"></Image>
+            <Image Height="150" Width="150" Source="{Binding currentUserAvatar, Mode=TwoWay}" Stretch="Uniform"></Image>
             <!--<Label Grid.Row="2" Content="{Binding CurrentPhone, Mode=TwoWay}"  Foreground="Black"  FontSize="23"></Label>-->
 
             <Label Grid.Row="1" Content="{Binding CurrentContact, Mode=TwoWay}"  Foreground="Black"  FontSize="23"></Label>

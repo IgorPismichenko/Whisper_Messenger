@@ -299,29 +299,29 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _CloseCommand;
         private DelegateCommand _BlockContact;
         private DelegateCommand _UnblockContact;
-        private DelegateCommand _ChangeTheme;
-        public ICommand ChangeTheme_Click
-        {
+        //private DelegateCommand _ChangeTheme;
+        //public ICommand ChangeTheme_Click
+        //{
 
-            get
-            {
-                if (_ChangeTheme == null)
-                {
-                    _ChangeTheme = new DelegateCommand(Theme, CanTheme);
-                }
-                return _ChangeTheme;
-            }
-        }
-        private void Theme(object o)
-        {
-            isDarkTheme = !isDarkTheme;
-            ApplyTheme();
+        //    get
+        //    {
+        //        if (_ChangeTheme == null)
+        //        {
+        //            _ChangeTheme = new DelegateCommand(Theme, CanTheme);
+        //        }
+        //        return _ChangeTheme;
+        //    }
+        //}
+        //private void Theme(object o)
+        //{
+        //    isDarkTheme = !isDarkTheme;
+        //    ApplyTheme();
            
-        }
-        private bool CanTheme(object o)
-        {
-            return true;
-        }
+        //}
+        //private bool CanTheme(object o)
+        //{
+        //    return true;
+        //}
         public ICommand RegButtonClick
         {
             get
@@ -803,6 +803,7 @@ namespace Whisper_Messenger.ViewModels
                         if (sender.us.avatar != null)
                         {
                             sender.us.Image = ConvertBitmapFunc(sender.us.avatar);
+                            
                         }
                        
                         CurrentOnline = sender.us.online;
