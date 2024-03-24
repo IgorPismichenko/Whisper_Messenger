@@ -188,8 +188,6 @@ namespace Whisper_Messenger.ViewModels
                     while (true)
                     {
                         Socket handler = sListener.Accept();
-                        handler.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buf);
-                        handler.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer, buf);
                         Receive(handler, ev);
                     }
                 }
