@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -70,6 +71,11 @@ namespace Whisper_Messenger.Views
             {
                 MessageBox.Show("Клиент-formMP: " + ex.Message);
             }
+        }
+        private void CloseClick(object sender, RoutedEventArgs e)
+        {
+           
+            this.Close();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Whisper_Messenger.ViewModels
                 try
                 {
                     byte[] buf = new byte[1000000];
-                    IPAddress ipAddr = IPAddress.Parse("26.208.70.215");
+                    IPAddress ipAddr = IPAddress.Parse("26.42.27.87");
                     IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 49152);
                     socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buf);
