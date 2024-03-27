@@ -33,7 +33,7 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                     <Button Width="20" Height="20" Content="🗖" Background="Transparent"
                 BorderThickness="0" BorderBrush="Transparent" Click="Maximize_Click"></Button>
                     <Button Width="20" Height="20" Content="🗙" Background="Transparent"
-                BorderThickness="0" BorderBrush="Transparent" Click="Close_Click"></Button>
+                BorderThickness="0" BorderBrush="Transparent" Command="{Binding CloseClick}" IsEnabled="{Binding IsButtonEnabled}"></Button>
                 </StackPanel>
             </Grid>
         </Border>
