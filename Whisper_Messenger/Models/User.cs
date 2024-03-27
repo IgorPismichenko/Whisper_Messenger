@@ -28,6 +28,8 @@ namespace Whisper_Messenger.Models
         [DataMember]
         public string? path { get; set; }
         [DataMember]
+        public string? isOnline { get; set; }
+        [DataMember]
         public string? contact;
         [DataMember]
         public string? Contact
@@ -50,6 +52,8 @@ namespace Whisper_Messenger.Models
         public byte[] media { get; set; }
         [DataMember]
         public List<Profile>? profile { get; set; }
+        [DataMember]
+        public List<byte[]>? mediaList { get; set; }
         [IgnoreDataMember]
         public BitmapImage image;
         [IgnoreDataMember]
@@ -67,6 +71,8 @@ namespace Whisper_Messenger.Models
         }
         [DataMember]
         public Chat? c { get; set; }
+        [DataMember]
+        public string? blocked { get; set; }
         public override string ToString()
         {
             return contact;

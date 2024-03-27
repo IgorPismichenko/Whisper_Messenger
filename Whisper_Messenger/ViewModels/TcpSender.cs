@@ -162,6 +162,22 @@ namespace Whisper_Messenger.ViewModels
                         {
                             MessageBox.Show("Успешно удаленно");
                         }
+                        else if (user.command == "ContactIsBlocked")
+                        {
+                            us = user;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                a?.Invoke();
+                            });
+                        }
+                        else if (user.command == "ContactIsUnblocked")
+                        {
+                            us = user;
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                a?.Invoke();
+                            });
+                        }
                     }
                 }
                 catch (Exception ex)

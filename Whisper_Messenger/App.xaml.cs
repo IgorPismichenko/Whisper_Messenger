@@ -14,9 +14,11 @@ namespace Whisper_Messenger
         private void OnStartup(object sender, StartupEventArgs e)
         {
             ManualResetEvent resetEvent = new ManualResetEvent(false);
-            MainViewModel viewModel = new MainViewModel(resetEvent);
+            ManualResetEvent resetEventClose = new ManualResetEvent(false);
+            MainViewModel viewModel = new MainViewModel(resetEvent, resetEventClose);
             Authentification auth = new Authentification();
             auth.man_event = resetEvent;
+            auth.man_eventClose = resetEventClose;
             auth.DataContext = viewModel;
             auth.sock = viewModel.sender.socket;
             auth.Show();

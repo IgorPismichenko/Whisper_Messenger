@@ -27,15 +27,17 @@ namespace Whisper_Messenger.ViewModels
         [DataMember]
         public TcpSender sender;
         ManualResetEvent mRevent;
+        ManualResetEvent mReventClose;
         Socket socket;
         public event Action MyEvent;
         public event Action MyEvent2;
         string temp;
         byte[] defImg;
         private PopupNotifier notifier = null;
-        public MainViewModel(ManualResetEvent ev)
+        public MainViewModel(ManualResetEvent ev, ManualResetEvent evC)
         {
             mRevent = ev;
+            mReventClose = evC;
             MyEvent += MyEventHandler;
             MyEvent2 += MyEventHandler2;
             CurrentLogin = "login";
@@ -104,6 +106,19 @@ namespace Whisper_Messenger.ViewModels
                 RaisePropertyChanged(nameof(Sms));
             }
         }
+        string currentSms;
+        public string CurrentSms
+        {
+            get
+            {
+                return currentSms;
+            }
+            set
+            {
+                currentSms = value;
+                RaisePropertyChanged(nameof(CurrentSms));
+            }
+        }
 
         string selectedContactNickname;
 
@@ -152,6 +167,33 @@ namespace Whisper_Messenger.ViewModels
             {
                 currentPath = value;
                 RaisePropertyChanged(nameof(CurrentPath));
+            }
+        }
+
+        string currentBlock;
+        public string CurrentBlock
+        {
+            get
+            {
+                return currentBlock;
+            }
+            set
+            {
+                currentBlock = value;
+                RaisePropertyChanged(nameof(CurrentBlock));
+            }
+        }
+        string currentStatus;
+        public string CurrentStatus
+        {
+            get
+            {
+                return currentStatus;
+            }
+            set
+            {
+                currentStatus = value;
+                RaisePropertyChanged(nameof(CurrentStatus));
             }
         }
 
@@ -241,6 +283,20 @@ namespace Whisper_Messenger.ViewModels
                 RaisePropertyChanged(nameof(Messages));
             }
         }
+        private ObservableCollection<BitmapImage>? images = new ObservableCollection<BitmapImage>();
+
+        public ObservableCollection<BitmapImage> Images
+        {
+            get
+            {
+                return images;
+            }
+            set
+            {
+                images = value;
+                RaisePropertyChanged(nameof(Images));
+            }
+        }
 
         private bool _isButtonEnabled;
 
@@ -268,6 +324,10 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _DeleteProfileCommand;
         private DelegateCommand _SendFileCommand;
         private DelegateCommand _DeleteUserFromContact;
+        private DelegateCommand _BlockContact;
+        private DelegateCommand _UnblockContact;
+        private DelegateCommand _CloseCommand;
+        private DelegateCommand _DeleteSmsCommand;
         public ICommand RegButtonClick
         {
             get
@@ -335,7 +395,15 @@ namespace Whisper_Messenger.ViewModels
         
         private void Send(object o)
         {
-            if (CurrentContact != "")
+            if (CurrentBlock == "block")
+            {
+                MessageBox.Show("This contact was blocked. Unblock it to send messages!");
+            }
+            else if (CurrentContact == null || CurrentContact == "")
+            {
+                MessageBox.Show("Choose contact to send!");
+            }
+            else 
             {
 
                 User user = new User();
@@ -352,33 +420,7 @@ namespace Whisper_Messenger.ViewModels
                 Messages.Add(c);
                 Sms = "";
                 sender.SendCommand(user, mRevent, MyEvent2);
-
-                //string messageToParse = user.mess;
-
-                //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
-
-                //Match match = regex.Match(messageToParse);
-
-                //if (match.Success)
-                //{
-                //    string timestamp = match.Groups[1].Value;
-                //    string nickname = match.Groups[2].Value;
-                //    string messageText = match.Groups[3].Value;
-
-
-                //    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
-
-                //    Chat c = new Chat();
-                //    c.message = formattedMessage;
-                //    Messages.Add(c);
-                //}
-                //else
-                //{
-
-                //    Console.WriteLine("Message format is invalid: " + messageToParse);
-                //}
             }
-            
         }
         private bool CanSend(object o)
         {
@@ -579,47 +621,144 @@ namespace Whisper_Messenger.ViewModels
         }
         private bool CanSendFile(object o)
         {
-            //if (CurrentMediaPath == null /*|| CurrentContact == null*/)
-            //    return false;
             return true;
         }
 
-        public ICommand DeleteUserFromContactClick
+        //public ICommand DeleteUserFromContactClick
+        //{
+        //    get
+        //    {
+        //        if (_DeleteUserFromContact == null)
+        //        {
+        //            _DeleteUserFromContact = new DelegateCommand(DeleteUser, CanDeleteUser);
+        //        }
+        //        return _DeleteUserFromContact;
+        //    }
+        //}
+        //private void DeleteUser(object o)
+        //{
+           
+        //    User user1 = new User() { command = "DeleteUser" , contact = CurrentContact, login = CurrentLogin };
+        //    sender.SendCommand(user1, mRevent, MyEvent2);
+
+
+        
+        //    foreach (var user in Contacts)
+        //    {
+        //        if (user.contact == CurrentContact)
+        //        {
+        //            Contacts.Remove(user);
+        //            break; 
+        //        }
+        //    }
+        //    messages.Clear();
+        //    CurrentContact = "";
+        
+
+        //}
+        //private bool CanDeleteUser(object o)
+        //{
+        //    return true;
+
+        //}
+
+        public ICommand BlockContact
         {
             get
             {
-                if (_DeleteUserFromContact == null)
+                if (_BlockContact == null)
                 {
-                    _DeleteUserFromContact = new DelegateCommand(DeleteUser, CanDeleteUser);
+                    _BlockContact = new DelegateCommand(Block, CanBlock);
                 }
-                return _DeleteUserFromContact;
+                return _BlockContact;
             }
         }
-        private void DeleteUser(object o)
+
+        private void Block(object o)
         {
-           
-            User user1 = new User() { command = "DeleteUser" , contact = CurrentContact };
-            sender.SendCommand(user1, mRevent, MyEvent2);
-
-
-        
-            foreach (var user in Contacts)
-            {
-                if (user.contact == CurrentContact)
-                {
-                    Contacts.Remove(user);
-                    break; 
-                }
-            }
-            messages.Clear();
-            CurrentContact = "";
-        
-
+            User user = new User() { command = "BlockContact", contact = CurrentContact, login = CurrentLogin };
+            sender.SendCommand(user, mRevent, MyEvent2);
         }
-        private bool CanDeleteUser(object o)
+        private bool CanBlock(object o)
+        {
+
+            return true;
+        }
+
+        public ICommand UnblockContact
+        {
+            get
+            {
+                if (_UnblockContact == null)
+                {
+                    _UnblockContact = new DelegateCommand(Unblock, CanUnblock);
+                }
+                return _UnblockContact;
+            }
+        }
+
+        private void Unblock(object o)
+        {
+            User user = new User() { command = "UnblockContact", contact = CurrentContact, login = CurrentLogin };
+            sender.SendCommand(user, mRevent, MyEvent2);
+        }
+        private bool CanUnblock(object o)
         {
             return true;
+        }
+        public ICommand CloseClick
+        {
+            get
+            {
+                if (_CloseCommand == null)
+                {
+                    _CloseCommand = new DelegateCommand(Close, CanClose);
+                }
+                return _CloseCommand;
 
+            }
+        }
+        private void Close(object o)
+        {
+            User user = new User() { login = CurrentLogin, command = "CloseCommand", isOnline = "red" };
+            sender.SendCommand(user, mRevent, MyEvent2);
+            mReventClose.Set();
+            CurrentStatus = "red";
+
+        }
+        private bool CanClose(object o)
+        {
+            return true;
+        }
+        public ICommand DeleteSmsClick
+        {
+            get
+            {
+                if (_DeleteSmsCommand == null)
+                {
+                    _DeleteSmsCommand = new DelegateCommand(DeleteSms, CanDeleteSms);
+                }
+                return _DeleteSmsCommand;
+            }
+        }
+
+        private void DeleteSms(object o)
+        {
+            User user = new User() { command = "DeleteSms", mess = CurrentSms, login = CurrentLogin, contact = CurrentContact };
+            sender.SendCommand(user, mRevent, MyEvent2);
+            foreach (var message in Messages.ToList())
+            {
+                if (user.mess == CurrentSms)
+                {
+                    Messages.Remove(message);
+                    break;
+                }
+            }
+        }
+
+        private bool CanDeleteSms(object o)
+        {
+            return true;
         }
 
         private void RaisePropertyChanged(string propertyName)
@@ -634,6 +773,15 @@ namespace Whisper_Messenger.ViewModels
             if (sender.us.command == "Chat")
             {
                 Messages.Clear();
+                if (sender.us.blocked == "block")
+                {
+                    CurrentBlock = sender.us.blocked;
+                }
+                else
+                {
+                    CurrentBlock = "";
+                }
+                CurrentStatus = sender.us.isOnline;
                 foreach (var m in sender.us.chat)
                 {
                     if(m.media == null)
@@ -645,26 +793,13 @@ namespace Whisper_Messenger.ViewModels
                         m.VisibleText = Visibility.Collapsed;
                     }
                     Messages.Add(m);
-                    //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
-
-                    //Match match = regex.Match(m.message);
-
-                    //if (match.Success)
-                    //{
-                    //    string timestamp = match.Groups[1].Value;
-                    //    string nickname = match.Groups[2].Value;
-                    //    string messageText = match.Groups[3].Value;
-
-
-                    //    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
-                    //    m.message = formattedMessage;
-                    //    Messages.Add(m);
-                    //}
-                    //else
-                    //{
-                    //    Console.WriteLine("Ошибка парсинга сообщения: " + m);
-                    //}
                 }
+                foreach(var im in sender.us.mediaList)
+                {
+                    BitmapImage tmp = ConvertBitmapFunc(im);
+                    Images.Add(tmp);
+                }
+
             }
             else if (sender.us.command == "Accept")
             {
@@ -716,6 +851,36 @@ namespace Whisper_Messenger.ViewModels
                 }
                 CurrentLogin = sender.us.login;
             }
+            else if (sender.us.command == "ContactIsBlocked")
+            {
+                if(sender.us.blocked == "block")
+                {
+                   foreach(var c in Contacts)
+                   {
+                        if(c.login == sender.us.contact)
+                        {
+                            c.blocked = "block";
+                            CurrentBlock = "block";
+                        }
+                   }
+                }
+                MessageBox.Show("This contact is in your black list!");
+            }
+            else if (sender.us.command == "ContactIsUnblocked")
+            {
+                if (sender.us.blocked == "unblock")
+                {
+                    foreach (var c in Contacts)
+                    {
+                        if (c.login == sender.us.contact)
+                        {
+                            c.blocked = "unblock";
+                            CurrentBlock = "";
+                        }
+                    }
+                }
+                MessageBox.Show("This contact was succesfully unblocked!");
+            }
         }
         public void MyEventHandler2()
         {
@@ -723,8 +888,7 @@ namespace Whisper_Messenger.ViewModels
             {
                 if (CurrentContact == sender.us.c.chatContact)
                 {
-                    //foreach (var m in sender.us.chat)
-                    //{
+                    
                         if (sender.us.c.media == null)
                         {
                         sender.us.c.VisibleMedia = Visibility.Collapsed;
@@ -734,40 +898,13 @@ namespace Whisper_Messenger.ViewModels
                         sender.us.c.VisibleText = Visibility.Collapsed;
                         }
                         Messages.Add(sender.us.c);
-                        //Regex regex = new Regex(@"\((\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})\) (\w+):(.*)");
-
-                        //Match match = regex.Match(m.message);
-
-                        //if (match.Success)
-                        //{
-                        //    string timestamp = match.Groups[1].Value;
-                        //    string nickname = match.Groups[2].Value;
-                        //    string messageText = match.Groups[3].Value;
-
-
-                        //    string formattedMessage = $"{nickname}: {messageText} \n{timestamp}";
-                        //    m.message = formattedMessage;
-                            //Messages.Add(m);
-
-                            notifier = new PopupNotifier();
-                            notifier.BodyColor = Color.Yellow;
-                            notifier.TitleText = sender.us.c.chatContact;
-                            notifier.ContentText = sender.us.c.message;
-
-                            notifier.TitleFont = new Font("Arial", 20);
-
-
-                            notifier.ContentFont = new Font("Arial", 18);
-
-
-                            notifier.Popup();
-
-                        //}
-                        //else
-                        //{
-                        //    Console.WriteLine("Ошибка парсинга сообщения: " + m);
-                        //}
-                    //}
+                        notifier = new PopupNotifier();
+                        notifier.BodyColor = Color.Yellow;
+                        notifier.TitleText = sender.us.c.chatContact;
+                        notifier.ContentText = sender.us.c.message;
+                        notifier.TitleFont = new Font("Arial", 20);
+                        notifier.ContentFont = new Font("Arial", 18);
+                        notifier.Popup();
                 }
             }
             else if (sender.us.command == "ContactProfileChanged")
@@ -781,6 +918,21 @@ namespace Whisper_Messenger.ViewModels
                         {
                             c.Image = ConvertBitmapFunc(sender.us.avatar);
                         }
+                    }
+                }
+            }
+            else if(sender.us.command == "ContactOnline")
+            {
+                foreach (var c in Contacts)
+                {
+                    if (c.login == sender.us.login && CurrentContact == sender.us.login)
+                    {
+                        c.isOnline = sender.us.isOnline;
+                        CurrentStatus = sender.us.isOnline;
+                    }
+                    else if (c.login == sender.us.login)
+                    {
+                        c.isOnline = sender.us.isOnline;
                     }
                 }
             }

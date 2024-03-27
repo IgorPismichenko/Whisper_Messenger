@@ -21,6 +21,7 @@ namespace Whisper_Messenger.Views
     {
         public Socket? sock;
         public ManualResetEvent man_event;
+        public ManualResetEvent man_eventClose;
         public SynchronizationContext uiContext;
         SoundPlayer soundPlayer;
         MediaPreview mediaPreview;
@@ -29,9 +30,11 @@ namespace Whisper_Messenger.Views
         {
             InitializeComponent();
             man_event = new ManualResetEvent(false);
+            man_eventClose = new ManualResetEvent(false);
             uiContext = SynchronizationContext.Current;
             PlayOnStart();
             OpenForm();
+            OpenFormForClose();
         }
         private void SmsInFocus(object sender, RoutedEventArgs e)
         {
@@ -70,19 +73,19 @@ namespace Whisper_Messenger.Views
                 mediaPreview.MediaPathTextBox.Focus();
             }
         }
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                sock.Shutdown(SocketShutdown.Both);
-                sock.Close();
-                this.Close();
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show("Клиент-formM-closing: " + ex.Message);
-            }
-        }
+        //private void Close_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        sock.Shutdown(SocketShutdown.Both);
+        //        sock.Close();
+        //        this.Close();
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        MessageBox.Show("Клиент-formM-closing: " + ex.Message);
+        //    }
+        //}
         private void Minimize_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
@@ -131,6 +134,7 @@ namespace Whisper_Messenger.Views
                     man_event.Reset();
                     Register register = new Register();
                     register.man_event = man_event;
+                    register.man_eventClose = man_eventClose;
                     register.DataContext = DataContext;
                     register.sock = sock;
                     register.Show();
@@ -182,6 +186,42 @@ namespace Whisper_Messenger.Views
             if (!str.Contains(e.Text) || PhoneTextBox.Text.Length == 10)
             {
                 e.Handled = true;
+            }
+        }
+        private async void OpenFormForClose()
+        {
+            await Task.Run(() =>
+            {
+                try
+                {
+                    man_eventClose.WaitOne();
+                    if (mediaPreview == null)
+                    {
+                        uiContext.Send(d => FormForClosingFunc(), null);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Клиент-formMCl-Function: " + ex.Message);
+                }
+            });
+        }
+        private void FormForClosingFunc()
+        {
+            try
+            {
+                if (this.IsVisible)
+                {
+                    man_eventClose.Reset();
+                    sock.Shutdown(SocketShutdown.Both);
+                    sock.Close();
+                    this.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Клиент-formMCl: " + ex.Message);
             }
         }
     }
