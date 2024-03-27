@@ -72,10 +72,6 @@ namespace Whisper_Messenger.Views
                 MessageBox.Show("Клиент-formMP: " + ex.Message);
             }
         }
-        private void CloseClick(object sender, RoutedEventArgs e)
-        {
-           
-            this.Close();
-        }
+        
     }
 }

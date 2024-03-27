@@ -323,7 +323,7 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _ReadProfileCommand;
         private DelegateCommand _DeleteProfileCommand;
         private DelegateCommand _SendFileCommand;
-        private DelegateCommand _DeleteUserFromContact;
+        //private DelegateCommand _DeleteUserFromContact;
         private DelegateCommand _BlockContact;
         private DelegateCommand _UnblockContact;
         private DelegateCommand _CloseCommand;
@@ -794,10 +794,13 @@ namespace Whisper_Messenger.ViewModels
                     }
                     Messages.Add(m);
                 }
-                foreach(var im in sender.us.mediaList)
+                if (sender.us.mediaList != null)
                 {
-                    BitmapImage tmp = ConvertBitmapFunc(im);
-                    Images.Add(tmp);
+                    foreach (var im in sender.us.mediaList)
+                    {
+                        BitmapImage tmp = ConvertBitmapFunc(im);
+                        Images.Add(tmp);
+                    }
                 }
 
             }
