@@ -323,6 +323,32 @@ namespace Whisper_Messenger.ViewModels
                 RaisePropertyChanged(nameof(SelectedContactStatus));
             }
         }
+        string currentContactPhone;
+        public string CurrentContactPhone
+        {
+            get
+            {
+                return currentContactPhone;
+            }
+            set
+            {
+                currentContactPhone = value;
+                RaisePropertyChanged(nameof(CurrentContactPhone));
+            }
+        }
+        BitmapImage currentAvatar;
+        public BitmapImage CurrentAvatar
+        {
+            get
+            {
+                return currentAvatar;
+            }
+            set
+            {
+                currentAvatar = value;
+                RaisePropertyChanged(nameof(CurrentAvatar));
+            }
+        }
         #endregion
         #region ICommands
         private DelegateCommand _RegCommand;
@@ -428,7 +454,7 @@ namespace Whisper_Messenger.ViewModels
                 c.chatContact = CurrentLogin;
                 c.VisibleText = Visibility.Visible;
                 c.VisibleMedia = Visibility.Collapsed;
-                Messages.Add(c);
+                Messages.Insert(0, c);
                 Sms = "";
                 sender.SendCommand(user, mRevent, MyEvent2);
             }
@@ -822,7 +848,7 @@ namespace Whisper_Messenger.ViewModels
                     SelectedContactStatus = "⚫ offline";
                     CurrentStatus = sender.us.isOnline;
                 }
-                
+                CurrentContactPhone = sender.us.phone;
                 foreach (var m in sender.us.chat)
                 {
                     if(m.media == null)
@@ -833,7 +859,7 @@ namespace Whisper_Messenger.ViewModels
                     {
                         m.VisibleText = Visibility.Collapsed;
                     }
-                    Messages.Add(m);
+                    Messages.Insert(0, m);
                 }
                 if (sender.us.mediaList != null)
                 {
@@ -843,6 +869,11 @@ namespace Whisper_Messenger.ViewModels
                         Images.Add(tmp);
                     }
                 }
+                if (sender.us.avatar != null)
+                {
+                    CurrentAvatar = ConvertBitmapFunc(sender.us.avatar);
+                }
+
 
             }
             else if (sender.us.command == "Accept")
@@ -944,8 +975,8 @@ namespace Whisper_Messenger.ViewModels
                         {
                         sender.us.c.VisibleText = Visibility.Collapsed;
                         }
-                        Messages.Add(sender.us.c);
-                        notifier = new PopupNotifier();
+                    Messages.Insert(0, sender.us.c);
+                    notifier = new PopupNotifier();
                         notifier.BodyColor = Color.Yellow;
                         notifier.TitleText = sender.us.c.chatContact;
                         notifier.ContentText = sender.us.c.message;

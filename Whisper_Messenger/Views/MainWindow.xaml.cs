@@ -96,18 +96,7 @@ namespace Whisper_Messenger.Views
         {
             this.WindowState = WindowState.Minimized;
         }
-        private void Maximize_Click(Object sender, RoutedEventArgs e)
-        {
-            if (this.WindowState != WindowState.Maximized)
-            {
-                this.WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                this.WindowState = WindowState.Normal;
-
-            }
-        }
+        
         private void SearchInFocus(object sender, RoutedEventArgs e)
         {
             Search_TextBox.Text = string.Empty;
