@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
-    <SolidColorBrush Color=" #1A1F25" x:Key="MainBackgroundColorReg"/>
+    <SolidColorBrush Color=" #FCD221" x:Key="MainBackgroundColorReg"/>
     <SolidColorBrush Color="#1A1F25" x:Key="MainBackgroundColor"/> 
     <SolidColorBrush Color="#FFC90E" x:Key="sendSms"/>
     <SolidColorBrush Color="#262D36" x:Key="contactPart"/>
@@ -281,9 +281,9 @@
 
 
     <Style x:Key="TextBoxStyleForMainWindow" TargetType="{x:Type TextBox}">
-        <Setter Property="Control.FontFamily" Value="Constantia"/>
+        <Setter Property="Control.FontFamily" Value="Raavi"/>
         <Setter Property="Control.FontSize" Value="21" />
-        <Setter Property="Control.FontWeight" Value="Bold" />
+        
         <Setter Property="Control.Foreground" Value="Black" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="BorderBrush" Value="Transparent"></Setter>

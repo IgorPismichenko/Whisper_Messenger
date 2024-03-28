@@ -312,6 +312,17 @@ namespace Whisper_Messenger.ViewModels
                 RaisePropertyChanged(nameof(IsButtonEnabled));
             }
         }
+        string selectedContactStatus;
+
+        public string SelectedContactStatus
+        {
+            get { return selectedContactStatus; }
+            set
+            {
+                selectedContactStatus = value;
+                RaisePropertyChanged(nameof(SelectedContactStatus));
+            }
+        }
         #endregion
         #region ICommands
         private DelegateCommand _RegCommand;
@@ -744,15 +755,30 @@ namespace Whisper_Messenger.ViewModels
 
         private void DeleteSms(object o)
         {
-            User user = new User() { command = "DeleteSms", mess = CurrentSms, login = CurrentLogin, contact = CurrentContact };
-            sender.SendCommand(user, mRevent, MyEvent2);
-            foreach (var message in Messages.ToList())
+            //User user = new User() { command = "DeleteSms", mess = CurrentSms, login = CurrentLogin, contact = CurrentContact };
+
+            //foreach (var message in Messages.ToList())
+            //{
+            //    if (user.mess == CurrentSms)
+            //    {
+            //        Messages.Remove(message);
+            //        break;
+            //    }
+            //}
+            //sender.SendCommand(user, mRevent, MyEvent2);
+            if (CurrentSms != null)
             {
-                if (user.mess == CurrentSms)
+                User user = new User() { command = "DeleteSms", mess = CurrentSms, login = CurrentLogin, contact = CurrentContact };
+
+                foreach (var message in Messages.ToList())
                 {
-                    Messages.Remove(message);
-                    break;
+                    if (user.mess == CurrentSms)
+                    {
+                        Messages.Remove(message);
+                        break;
+                    }
                 }
+                sender.SendCommand(user, mRevent, MyEvent2);
             }
         }
 
@@ -775,13 +801,28 @@ namespace Whisper_Messenger.ViewModels
                 Messages.Clear();
                 if (sender.us.blocked == "block")
                 {
-                    CurrentBlock = sender.us.blocked;
+                    CurrentBlock = "🙁";
                 }
                 else
                 {
                     CurrentBlock = "";
                 }
-                CurrentStatus = sender.us.isOnline;
+                if(sender.us.isOnline == "green")
+                {
+                    SelectedContactStatus = "⚫ online";
+                    CurrentStatus = sender.us.isOnline;
+                }
+                else if(sender.us.isOnline == "red")
+                {
+                    SelectedContactStatus = "⚫ offline";
+                    CurrentStatus = sender.us.isOnline;
+                }
+                else if( sender.us.isOnline == "black")
+                {
+                    SelectedContactStatus = "⚫ offline";
+                    CurrentStatus = sender.us.isOnline;
+                }
+                
                 foreach (var m in sender.us.chat)
                 {
                     if(m.media == null)
@@ -794,10 +835,13 @@ namespace Whisper_Messenger.ViewModels
                     }
                     Messages.Add(m);
                 }
-                foreach(var im in sender.us.mediaList)
+                if (sender.us.mediaList != null)
                 {
-                    BitmapImage tmp = ConvertBitmapFunc(im);
-                    Images.Add(tmp);
+                    foreach (var im in sender.us.mediaList)
+                    {
+                        BitmapImage tmp = ConvertBitmapFunc(im);
+                        Images.Add(tmp);
+                    }
                 }
 
             }
@@ -860,9 +904,10 @@ namespace Whisper_Messenger.ViewModels
                         if(c.login == sender.us.contact)
                         {
                             c.blocked = "block";
-                            CurrentBlock = "block";
+                            //CurrentBlock = "🙁";
                         }
                    }
+                    CurrentBlock = "🙁";
                 }
                 MessageBox.Show("This contact is in your black list!");
             }
@@ -875,12 +920,14 @@ namespace Whisper_Messenger.ViewModels
                         if (c.login == sender.us.contact)
                         {
                             c.blocked = "unblock";
-                            CurrentBlock = "";
+                            
                         }
                     }
                 }
+                CurrentBlock = "";
                 MessageBox.Show("This contact was succesfully unblocked!");
             }
+            
         }
         public void MyEventHandler2()
         {

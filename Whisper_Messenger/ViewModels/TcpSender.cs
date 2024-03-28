@@ -178,6 +178,7 @@ namespace Whisper_Messenger.ViewModels
                                 a?.Invoke();
                             });
                         }
+                      
                     }
                 }
                 catch (Exception ex)
