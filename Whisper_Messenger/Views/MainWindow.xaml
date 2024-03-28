@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         Title="MainWindow" Height="450" Width="950" WindowStyle="None" Icon="/photo_2023-12-18_16-19-13.jpg"
-AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
+AllowsTransparency="True" ResizeMode="NoResize" >
     <!--<Window.Resources>
 
     <ResourceDictionary Source="Theme/Light.xaml"/>
@@ -30,8 +30,7 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                     <Button Width="20" Height="20" Content="🗕" Background="Transparent"
                     BorderThickness="0" BorderBrush="Transparent" Click="Minimize_Click"></Button>
-                    <Button Width="20" Height="20" Content="🗖" Background="Transparent"
-                BorderThickness="0" BorderBrush="Transparent" Click="Maximize_Click"></Button>
+                    
                     <Button Width="20" Height="20" Content="🗙" Background="Transparent"
                 BorderThickness="0" BorderBrush="Transparent" Command="{Binding CloseClick}" IsEnabled="{Binding IsButtonEnabled}"></Button>
                 </StackPanel>
@@ -73,7 +72,7 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                 </i:Interaction.Triggers>
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Удалить контакт из списка контактов" Command="{Binding DeleteUserFromContactClick}"/>
+                        <MenuItem Header="Поместить контакт в чёрный список" Command="{Binding BlockContact}"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
 
@@ -151,13 +150,46 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
 
         </Grid>
         <Grid Grid.Column="1" Grid.Row="1">
-            <Grid.RowDefinitions>
+            <!--<Grid.RowDefinitions>
                 <RowDefinition Height="35"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <Label Content="{Binding SelectedContactNickname}"  Name="Contacts"  FontSize="16" Margin="7,0,5,5" FontWeight="Bold"
-     BorderBrush="Transparent" Background="Transparent" Foreground="{DynamicResource nickname}"/>
+     BorderBrush="Transparent" Background="Transparent" Foreground="{DynamicResource nickname}"/>-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="330"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="120"/>
+
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="1" Content="{Binding SelectedContactNickname}"  Name="Contacts"  FontSize="23"  FontWeight="Medium" 
+                BorderBrush="Transparent" Background="Transparent" Foreground="{DynamicResource nickname}" Height="45"/>
+
+                <Label  Grid.Column="1" Content="{Binding CurrentBlock}" Margin="12,0,0,0" FontSize="16">
+                    <Label.ContextMenu>
+                        <ContextMenu>
+
+                            <MenuItem Header="Разблокировать контакт " Command="{Binding UnblockContact}"/>
+
+
+                        </ContextMenu>
+                    </Label.ContextMenu>
+                </Label>
+
+
+                <Label Grid.Column="2" Content="{Binding SelectedContactStatus}" Foreground="{Binding CurrentStatus}" Margin="5,0,0,0"  FontSize="16"
+                HorizontalAlignment="Right"></Label>
+
+            </Grid>
 
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
@@ -167,12 +199,12 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                 </Grid.ColumnDefinitions>
                 <TextBox Name="sms" Margin="2,2,2,2"  Style="{DynamicResource TextBoxStyleForMainWindow}" Grid.Column="1"
                  Background="{DynamicResource smsAndSearchTextBox}" Text="{Binding Sms}" GotFocus="SmsInFocus" ></TextBox>
-                
-                <Button Name="SendButton"  Grid.Column="2" Foreground="{DynamicResource sendSms}" FontSize="25"  
+
+                <Button Name="SendButton"  Grid.Column="2" Foreground="{DynamicResource nickname}" FontSize="25"  
                 Background="Transparent" BorderBrush="Transparent"  Content="➤"
                 Style="{StaticResource NoHoverButtonStyle}" Command="{Binding SendButtonClick}" IsEnabled="{Binding IsButtonEnabled}"></Button>
 
-                <Button Name="SendFileButton"  Grid.Column="0"  FontSize="25"  Foreground="Black"
+                <Button Name="SendFileButton"  Grid.Column="0"  FontSize="25"  Foreground="{DynamicResource nickname}"
                 Background="Transparent" BorderBrush="Transparent"  Content="📁"
                 Style="{StaticResource NoHoverButtonStyle}" Click="ChooseFileClick"></Button>
 
@@ -180,9 +212,9 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                 
 
             </Grid>
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Messages}" >
-                    <ItemsControl.ItemTemplate>
+            <ScrollViewer Grid.Row="1"  VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Messages}">
+                <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
                                 <WrapPanel Visibility="{Binding VisibleText, Mode=TwoWay}">
@@ -197,12 +229,11 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                                         <TextBlock Text="{Binding date}" TextAlignment="Justify"/>
                                     </StackPanel>
                                 </WrapPanel>
-                                <WrapPanel Visibility="{Binding VisibleMedia, Mode=TwoWay}">
-                                    
+                                <WrapPanel Visibility="{Binding VisibleMedia, Mode=TwoWay}" >
                                     <StackPanel>
                                         <Border CornerRadius="5 5 5 0" Margin="5" Padding="10" BorderBrush="Gray" BorderThickness="2" >
                                             <StackPanel>
-                                                <TextBlock Text="{Binding chatContact}" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding chatContact}" FontWeight="Bold" />
                                                 <Image Source="{Binding media}" Width="100" Height="100" Margin="5" />
                                             </StackPanel>
                                         </Border>
@@ -212,41 +243,47 @@ AllowsTransparency="True" ResizeMode="CanResizeWithGrip">
                             </StackPanel>
                         </DataTemplate>
                 </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                    <ItemsControl.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Удалить сообщение" Command="{Binding DeleteSmsClick}" />
+
+
+                        </ContextMenu>
+                    </ItemsControl.ContextMenu>
+                </ItemsControl>
             </ScrollViewer>
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="2" Background="{DynamicResource contactPart}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Image Source="{Binding CurrentAvatar, Mode=TwoWay}" Width="180" Height="180" Grid.Row="0"></Image>
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <TextBox BorderThickness="0 2 0 2" BorderBrush="Black" Text="{Binding CurrentBlock}" Height="20" Grid.Column="1" TextAlignment="Center" FontSize="12"  FontWeight="Bold" Background="{DynamicResource contactPart}"></TextBox>
-                <TextBox BorderThickness="0 2 0 2" BorderBrush="Black" Text="{Binding CurrentContactPhone}" TextAlignment="Center" Height="20" Grid.Column="0" FontSize="12" FontWeight="Bold" Background="{DynamicResource contactPart}"></TextBox>
-            </Grid>
-            <TextBox BorderThickness="0" Margin="5" Grid.Row="2" Text="Last media list" FontSize="16" FontWeight="Bold" TextAlignment="Center" Background="{DynamicResource contactPart}"></TextBox>
-            <ItemsControl ItemsSource="{Binding Images}" Grid.Row="3" Background="{DynamicResource contactPart}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" ItemWidth="60" Width="200" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="Black" BorderThickness="1" Margin="5">
-                            <Image Source="{Binding}"/>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <Grid Grid.Row="1" Grid.Column="2" Background="{DynamicResource contactPart}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Image Source="{Binding CurrentAvatar, Mode=TwoWay}" Width="180" Height="180" Grid.Row="0"></Image>
+               
+
+
+                 <Label BorderThickness="0 2 0 2" Width="200" Height="25" Grid.Row="1" BorderBrush="Black" Content="{Binding CurrentContactPhone}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="0" FontSize="10" FontWeight="Bold" Background="{DynamicResource contactPart}" Foreground="{DynamicResource nickname}"></Label>
+                
+                <TextBox BorderThickness="0" Margin="5" Grid.Row="2" Text="Last media list" FontSize="16" FontWeight="Bold" TextAlignment="Center" Background="{DynamicResource contactPart}" Foreground="{DynamicResource nickname}"></TextBox>
+                <ItemsControl ItemsSource="{Binding Images}" Grid.Row="3" Background="{DynamicResource contactPart}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" ItemWidth="60" Width="200" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Black" BorderThickness="1" Margin="5">
+                                <Image Source="{Binding}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid> 
         </Grid>
     </Grid>
 </Window>

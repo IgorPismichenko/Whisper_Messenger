@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace Whisper_Messenger.Views
 {
@@ -25,9 +27,13 @@ namespace Whisper_Messenger.Views
         public SynchronizationContext uiContext;
         SoundPlayer soundPlayer;
         MediaPreview mediaPreview;
-        public static bool isDarkTheme = false;
+        public static bool isDarkTheme;
+        public string theme = "Light";
+        public static readonly string ThemeKey = "AppTheme";
+        public static readonly string SettingsFilePath = "appsettings.xml";
         public MainWindow()
         {
+            LoadSettings();
             InitializeComponent();
             man_event = new ManualResetEvent(false);
             man_eventClose = new ManualResetEvent(false);
@@ -90,18 +96,7 @@ namespace Whisper_Messenger.Views
         {
             this.WindowState = WindowState.Minimized;
         }
-        private void Maximize_Click(Object sender, RoutedEventArgs e)
-        {
-            if (this.WindowState != WindowState.Maximized)
-            {
-                this.WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                this.WindowState = WindowState.Normal;
-
-            }
-        }
+        
         private void SearchInFocus(object sender, RoutedEventArgs e)
         {
             Search_TextBox.Text = string.Empty;
@@ -155,8 +150,11 @@ namespace Whisper_Messenger.Views
         private void ChangeTheme_Click(object sender, RoutedEventArgs e)
         {
             isDarkTheme = !isDarkTheme;
+            //theme = (theme == "Light") ? "Dark" : "Light";
             ApplyTheme();
-            //Application.Current.Properties["ThemeChoice"] = isDarkTheme ? "Dark" : "Light";
+            SaveSettings();
+            //Application.Current.Resources[ThemeKey] = isDarkTheme ? "Dark" : "Light";
+            Application.Current.Properties[ThemeKey] = isDarkTheme ? "Dark" : "Light";
 
         }
 
@@ -170,6 +168,31 @@ namespace Whisper_Messenger.Views
             {
                 ChangeTheme.ThemeChange(new Uri("Theme/Dark.xaml", UriKind.Relative));
 
+            }
+        }
+        private void SaveSettings()
+        {
+
+            AppSettings settings = new AppSettings();
+            settings.Theme = isDarkTheme ? "Dark" : "Light";
+
+            XmlSerializer serializer = new XmlSerializer(typeof(AppSettings));
+            using (FileStream stream = new FileStream(SettingsFilePath, FileMode.Create))
+            {
+                serializer.Serialize(stream, settings);
+            }
+        }
+        private void LoadSettings()
+        {
+            if (File.Exists(SettingsFilePath))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(AppSettings));
+                using (FileStream stream = new FileStream(SettingsFilePath, FileMode.Open))
+                {
+                    AppSettings settings = (AppSettings)serializer.Deserialize(stream);
+                    isDarkTheme = settings.Theme == "Dark";
+                    ApplyTheme();
+                }
             }
         }
         private void InputLogCheck(object sender, TextCompositionEventArgs e)
@@ -224,5 +247,9 @@ namespace Whisper_Messenger.Views
                 MessageBox.Show("Клиент-formMCl: " + ex.Message);
             }
         }
+    }
+    public class AppSettings
+    {
+        public string Theme { get; set; }
     }
 }
