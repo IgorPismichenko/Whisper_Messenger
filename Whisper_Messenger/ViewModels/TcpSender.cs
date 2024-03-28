@@ -243,9 +243,16 @@ namespace Whisper_Messenger.ViewModels
                         });
                     }
                 }
-                catch (Exception ex)
+                catch (SocketException ex)
                 {
-                    MessageBox.Show("Клиент-sms.receive: " + ex.Message);
+                    if (ex.SocketErrorCode == SocketError.ConnectionReset)
+                    {
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Клиент-sms.receive: " + ex.Message);
+                    }
                 }
             });
         }

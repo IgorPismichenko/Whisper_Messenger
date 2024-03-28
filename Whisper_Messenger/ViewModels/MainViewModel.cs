@@ -93,6 +93,19 @@ namespace Whisper_Messenger.ViewModels
                 RaisePropertyChanged(nameof(CurrentPhone));
             }
         }
+        string currentContactPhone;
+        public string CurrentContactPhone
+        {
+            get
+            {
+                return currentContactPhone;
+            }
+            set
+            {
+                currentContactPhone = value;
+                RaisePropertyChanged(nameof(CurrentContactPhone));
+            }
+        }
         string sms;
         public string Sms
         {
@@ -238,6 +251,19 @@ namespace Whisper_Messenger.ViewModels
             {
                 currentUserAvatar = value;
                 RaisePropertyChanged(nameof(CurrentUserAvatar));
+            }
+        }
+        BitmapImage currentAvatar;
+        public BitmapImage CurrentAvatar
+        {
+            get
+            {
+                return currentAvatar;
+            }
+            set
+            {
+                currentAvatar = value;
+                RaisePropertyChanged(nameof(CurrentAvatar));
             }
         }
 
@@ -417,7 +443,7 @@ namespace Whisper_Messenger.ViewModels
                 c.chatContact = CurrentLogin;
                 c.VisibleText = Visibility.Visible;
                 c.VisibleMedia = Visibility.Collapsed;
-                Messages.Add(c);
+                Messages.Insert(0, c);
                 Sms = "";
                 sender.SendCommand(user, mRevent, MyEvent2);
             }
@@ -744,6 +770,7 @@ namespace Whisper_Messenger.ViewModels
 
         private void DeleteSms(object o)
         {
+
             User user = new User() { command = "DeleteSms", mess = CurrentSms, login = CurrentLogin, contact = CurrentContact };
             sender.SendCommand(user, mRevent, MyEvent2);
             foreach (var message in Messages.ToList())
@@ -782,6 +809,7 @@ namespace Whisper_Messenger.ViewModels
                     CurrentBlock = "";
                 }
                 CurrentStatus = sender.us.isOnline;
+                CurrentContactPhone = sender.us.phone;
                 foreach (var m in sender.us.chat)
                 {
                     if(m.media == null)
@@ -792,8 +820,9 @@ namespace Whisper_Messenger.ViewModels
                     {
                         m.VisibleText = Visibility.Collapsed;
                     }
-                    Messages.Add(m);
+                    Messages.Insert(0, m);
                 }
+                
                 if (sender.us.mediaList != null)
                 {
                     foreach (var im in sender.us.mediaList)
@@ -801,6 +830,10 @@ namespace Whisper_Messenger.ViewModels
                         BitmapImage tmp = ConvertBitmapFunc(im);
                         Images.Add(tmp);
                     }
+                }
+                if (sender.us.avatar != null)
+                {
+                    CurrentAvatar = ConvertBitmapFunc(sender.us.avatar);
                 }
 
             }
@@ -900,7 +933,9 @@ namespace Whisper_Messenger.ViewModels
                         {
                         sender.us.c.VisibleText = Visibility.Collapsed;
                         }
-                        Messages.Add(sender.us.c);
+                    
+                    Messages.Insert(0, sender.us.c);
+                        
                         notifier = new PopupNotifier();
                         notifier.BodyColor = Color.Yellow;
                         notifier.TitleText = sender.us.c.chatContact;
