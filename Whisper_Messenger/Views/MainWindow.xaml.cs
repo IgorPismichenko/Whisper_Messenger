@@ -16,14 +16,10 @@ using System.Xml.Serialization;
 
 namespace Whisper_Messenger.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public Socket? sock;
         public ManualResetEvent man_event;
-        public ManualResetEvent man_eventClose;
         public SynchronizationContext uiContext;
         SoundPlayer soundPlayer;
         MediaPreview mediaPreview;
@@ -36,11 +32,9 @@ namespace Whisper_Messenger.Views
             LoadSettings();
             InitializeComponent();
             man_event = new ManualResetEvent(false);
-            man_eventClose = new ManualResetEvent(false);
             uiContext = SynchronizationContext.Current;
             PlayOnStart();
             OpenForm();
-            OpenFormForClose();
         }
         private void SmsInFocus(object sender, RoutedEventArgs e)
         {
@@ -67,17 +61,16 @@ namespace Whisper_Messenger.Views
 
         private void ChooseFileClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Изображения (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|Все файлы (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
+            //OpenFileDialog openFileDialog = new OpenFileDialog();
+            //openFileDialog.Filter = "Изображения (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|Все файлы (*.*)|*.*";
+            //if (openFileDialog.ShowDialog() == true)
+            //{
                 mediaPreview = new MediaPreview();
-                mediaPreview.man_event = man_event;
                 mediaPreview.DataContext = DataContext;
+                //mediaPreview.MediaPathTextBox.Text = openFileDialog.FileName;
                 mediaPreview.Show();
-                mediaPreview.MediaPathTextBox.Text = openFileDialog.FileName;
-                mediaPreview.MediaPathTextBox.Focus();
-            }
+                //mediaPreview.MediaPathTextBox.Focus();
+            //}
         }
         
         private void Minimize_Click(object sender, RoutedEventArgs e)
@@ -117,7 +110,6 @@ namespace Whisper_Messenger.Views
                     man_event.Reset();
                     Register register = new Register();
                     register.man_event = man_event;
-                    register.man_eventClose = man_eventClose;
                     register.DataContext = DataContext;
                     register.sock = sock;
                     register.Show();
@@ -199,41 +191,11 @@ namespace Whisper_Messenger.Views
                 e.Handled = true;
             }
         }
-        private async void OpenFormForClose()
+        private void CloseClick(object sender, RoutedEventArgs e)
         {
-            await Task.Run(() =>
-            {
-                try
-                {
-                    man_eventClose.WaitOne();
-                    if (mediaPreview == null)
-                    {
-                        uiContext.Send(d => FormForClosingFunc(), null);
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Клиент-formMCl-Function: " + ex.Message);
-                }
-            });
-        }
-        private void FormForClosingFunc()
-        {
-            try
-            {
-                if (this.IsVisible)
-                {
-                    man_eventClose.Reset();
-                    sock.Shutdown(SocketShutdown.Both);
-                    sock.Close();
-                    this.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Клиент-formMCl: " + ex.Message);
-            }
+            sock.Shutdown(SocketShutdown.Both);
+            sock.Close();
+            this.Close();
         }
     }
     public class AppSettings

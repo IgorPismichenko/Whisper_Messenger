@@ -23,19 +23,13 @@ namespace Whisper_Messenger.Views
         public Socket? sock;
         public SynchronizationContext uiContext;
         public ManualResetEvent man_event;
-        public ManualResetEvent man_eventClose;
         public Register()
         {
             InitializeComponent();
             uiContext = SynchronizationContext.Current;
             man_event = new ManualResetEvent(false);
-            man_eventClose = new ManualResetEvent(false);
             OpenForm();
         }
-        //private void PassInFocus(object sender, RoutedEventArgs e)
-        //{
-        //    Password_textBox.Text = string.Empty;
-        //}
         private void PhoneInFocus(object sender, RoutedEventArgs e)
         {
             phone_textBox.Text = string.Empty;
@@ -74,7 +68,6 @@ namespace Whisper_Messenger.Views
                 man_event.Reset();
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.man_event = man_event;
-                mainWindow.man_eventClose = man_eventClose;
                 mainWindow.DataContext = DataContext;
                 mainWindow.sock = sock;
                 Thread.Sleep(1500);
@@ -106,7 +99,6 @@ namespace Whisper_Messenger.Views
         {
             Authentification logIn = new Authentification();
             logIn.man_event = man_event;
-            logIn.man_eventClose = man_eventClose;
             logIn.DataContext = DataContext;
             logIn.sock = sock;
             logIn.Show();

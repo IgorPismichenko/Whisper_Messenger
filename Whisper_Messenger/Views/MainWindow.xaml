@@ -31,7 +31,7 @@ AllowsTransparency="True" ResizeMode="NoResize" >
                     <Button Width="20" Height="20" Content="🗕" Background="Transparent"
                     BorderThickness="0" BorderBrush="Transparent" Click="Minimize_Click"></Button>
                     
-                    <Button Width="20" Height="20" Content="🗙" Background="Transparent"
+                    <Button Width="20" Height="20" Content="🗙" Background="Transparent" Click="CloseClick"
                 BorderThickness="0" BorderBrush="Transparent" Command="{Binding CloseClick}" IsEnabled="{Binding IsButtonEnabled}"></Button>
                 </StackPanel>
             </Grid>
@@ -72,7 +72,8 @@ AllowsTransparency="True" ResizeMode="NoResize" >
                 </i:Interaction.Triggers>
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Поместить контакт в чёрный список" Command="{Binding BlockContact}"/>
+                        <MenuItem Header="Add in Black list" Command="{Binding BlockContact}" Background="{DynamicResource contactPart}"/>
+                        <MenuItem Header="Remove from Black list" Command="{Binding UnblockContact}" Background="{DynamicResource contactPart}"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
 
@@ -206,7 +207,7 @@ AllowsTransparency="True" ResizeMode="NoResize" >
 
                 <Button Name="SendFileButton"  Grid.Column="0"  FontSize="25"  Foreground="{DynamicResource nickname}"
                 Background="Transparent" BorderBrush="Transparent"  Content="📁"
-                Style="{StaticResource NoHoverButtonStyle}" Click="ChooseFileClick"></Button>
+                Style="{StaticResource NoHoverButtonStyle}" Click="ChooseFileClick" Height="40" VerticalAlignment="Top"></Button>
 
 
                 

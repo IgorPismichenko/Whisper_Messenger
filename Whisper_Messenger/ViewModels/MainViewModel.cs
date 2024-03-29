@@ -27,26 +27,20 @@ namespace Whisper_Messenger.ViewModels
         [DataMember]
         public TcpSender sender;
         ManualResetEvent mRevent;
-        ManualResetEvent mReventClose;
         Socket socket;
         public event Action MyEvent;
         public event Action MyEvent2;
         string temp;
         byte[] defImg;
         private PopupNotifier notifier = null;
-        public MainViewModel(ManualResetEvent ev, ManualResetEvent evC)
+        public MainViewModel(ManualResetEvent ev)
         {
             mRevent = ev;
-            mReventClose = evC;
             MyEvent += MyEventHandler;
             MyEvent2 += MyEventHandler2;
             CurrentLogin = "login";
-            //CurrentContact = "";
-            //CurrentPass = "password";
             CurrentPhone = "phone";
             CurrentSearch = "search";
-            //Sms = "";
-            //CurrentContact = "";
             IsButtonEnabled = true;
             sender = new TcpSender();
             sender.ReceiveMessage(socket, MyEvent2);
@@ -208,8 +202,7 @@ namespace Whisper_Messenger.ViewModels
             {
                 currentMediaPath = value;
                 RaisePropertyChanged(nameof(CurrentMediaPath));
-                byte[] img = GetImageBytes(currentMediaPath);
-                CurrentMedia = ConvertBitmapFunc(img);
+                
             }
         }
 
@@ -365,6 +358,7 @@ namespace Whisper_Messenger.ViewModels
         private DelegateCommand _UnblockContact;
         private DelegateCommand _CloseCommand;
         private DelegateCommand _DeleteSmsCommand;
+        private DelegateCommand _ShowMedia;
         public ICommand RegButtonClick
         {
             get
@@ -432,7 +426,7 @@ namespace Whisper_Messenger.ViewModels
         
         private void Send(object o)
         {
-            if (CurrentBlock == "block")
+            if (CurrentBlock == "🙁")
             {
                 MessageBox.Show("This contact was blocked. Unblock it to send messages!");
             }
@@ -637,7 +631,7 @@ namespace Whisper_Messenger.ViewModels
 
         private void SendFile(object o)
         {
-            if (CurrentBlock == "block")
+            if (CurrentBlock == "🙁")
             {
                 MessageBox.Show("This contact was blocked. Unblock it to send messages!");
             }
@@ -659,7 +653,6 @@ namespace Whisper_Messenger.ViewModels
                     c.VisibleMedia = Visibility.Visible;
                     Messages.Insert(0, c);
                     sender.SendCommand(user, mRevent, MyEvent2);
-                    mRevent.Set();
                     CurrentMedia = null;
                 }
             }
@@ -721,8 +714,15 @@ namespace Whisper_Messenger.ViewModels
 
         private void Block(object o)
         {
-            User user = new User() { command = "BlockContact", contact = CurrentContact, login = CurrentLogin };
-            sender.SendCommand(user, mRevent, MyEvent2);
+            if (CurrentBlock != "🙁")
+            {
+                User user = new User() { command = "BlockContact", contact = CurrentContact, login = CurrentLogin };
+                sender.SendCommand(user, mRevent, MyEvent2);
+            }
+            else
+            {
+                MessageBox.Show("This contact already blocked");
+            }
         }
         private bool CanBlock(object o)
         {
@@ -744,8 +744,15 @@ namespace Whisper_Messenger.ViewModels
 
         private void Unblock(object o)
         {
-            User user = new User() { command = "UnblockContact", contact = CurrentContact, login = CurrentLogin };
-            sender.SendCommand(user, mRevent, MyEvent2);
+            if (CurrentBlock == "🙁")
+            {
+                User user = new User() { command = "UnblockContact", contact = CurrentContact, login = CurrentLogin };
+                sender.SendCommand(user, mRevent, MyEvent2);
+            }
+            else
+            {
+                MessageBox.Show("This contact is not in a Black list");
+            }
         }
         private bool CanUnblock(object o)
         {
@@ -767,9 +774,6 @@ namespace Whisper_Messenger.ViewModels
         {
             User user = new User() { login = CurrentLogin, command = "CloseCommand", isOnline = "red" };
             sender.SendCommand(user, mRevent, MyEvent2);
-            mReventClose.Set();
-            //CurrentStatus = "red";
-
         }
         private bool CanClose(object o)
         {
@@ -789,17 +793,6 @@ namespace Whisper_Messenger.ViewModels
 
         private void DeleteSms(object o)
         {
-            //User user = new User() { command = "DeleteSms", mess = CurrentSms, login = CurrentLogin, contact = CurrentContact };
-
-            //foreach (var message in Messages.ToList())
-            //{
-            //    if (user.mess == CurrentSms)
-            //    {
-            //        Messages.Remove(message);
-            //        break;
-            //    }
-            //}
-            //sender.SendCommand(user, mRevent, MyEvent2);
             if (CurrentSms != null)
             {
                 User user = new User() { command = "DeleteSms", mess = CurrentSms, login = CurrentLogin, contact = CurrentContact };
@@ -817,6 +810,31 @@ namespace Whisper_Messenger.ViewModels
         }
 
         private bool CanDeleteSms(object o)
+        {
+            return true;
+        }
+        public ICommand ShowMediaClick
+        {
+            get
+            {
+                if (_ShowMedia == null)
+                {
+                    _ShowMedia = new DelegateCommand(ShowFile, CanShowFile);
+                }
+                return _ShowMedia;
+            }
+        }
+
+        private void ShowFile(object o)
+        {
+            if (CurrentMediaPath != null)
+            {
+                byte[] img = GetImageBytes(currentMediaPath);
+                CurrentMedia = ConvertBitmapFunc(img);
+            }
+        }
+
+        private bool CanShowFile(object o)
         {
             return true;
         }
@@ -851,10 +869,11 @@ namespace Whisper_Messenger.ViewModels
                     SelectedContactStatus = "⚫ offline";
                     CurrentStatus = sender.us.isOnline;
                 }
-                else if( sender.us.isOnline == "black")
+                if( sender.us.blocked == "block")
                 {
                     SelectedContactStatus = "⚫ offline";
                     CurrentStatus = sender.us.isOnline;
+                    CurrentBlock = "🙁";
                 }
                 CurrentContactPhone = sender.us.phone;
                 foreach (var m in sender.us.chat)
@@ -945,7 +964,6 @@ namespace Whisper_Messenger.ViewModels
                         if(c.login == sender.us.contact)
                         {
                             c.blocked = "block";
-                            //CurrentBlock = "🙁";
                         }
                    }
                     CurrentBlock = "🙁";
@@ -964,8 +982,8 @@ namespace Whisper_Messenger.ViewModels
                             
                         }
                     }
+                    CurrentBlock = "";
                 }
-                CurrentBlock = "";
                 MessageBox.Show("This contact was succesfully unblocked!");
             }
             
@@ -1016,7 +1034,16 @@ namespace Whisper_Messenger.ViewModels
                     if (c.login == sender.us.login && CurrentContact == sender.us.login)
                     {
                         c.isOnline = sender.us.isOnline;
-                        CurrentStatus = sender.us.isOnline;
+                        if (sender.us.isOnline == "green")
+                        {
+                            SelectedContactStatus = "⚫ online";
+                            
+                        }
+                        else if (sender.us.isOnline == "red")
+                        {
+                            SelectedContactStatus = "⚫ offline";
+                            
+                        }
                     }
                     else if (c.login == sender.us.login)
                     {
