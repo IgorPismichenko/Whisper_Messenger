@@ -18,7 +18,7 @@ namespace Whisper_Messenger.Views
 {
     public partial class MainWindow : Window
     {
-        public Socket? sock;
+        
         public ManualResetEvent man_event;
         public SynchronizationContext uiContext;
         SoundPlayer soundPlayer;
@@ -61,16 +61,12 @@ namespace Whisper_Messenger.Views
 
         private void ChooseFileClick(object sender, RoutedEventArgs e)
         {
-            //OpenFileDialog openFileDialog = new OpenFileDialog();
-            //openFileDialog.Filter = "Изображения (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|Все файлы (*.*)|*.*";
-            //if (openFileDialog.ShowDialog() == true)
-            //{
+            
                 mediaPreview = new MediaPreview();
                 mediaPreview.DataContext = DataContext;
-                //mediaPreview.MediaPathTextBox.Text = openFileDialog.FileName;
+                
                 mediaPreview.Show();
-                //mediaPreview.MediaPathTextBox.Focus();
-            //}
+               
         }
         
         private void Minimize_Click(object sender, RoutedEventArgs e)
@@ -111,7 +107,7 @@ namespace Whisper_Messenger.Views
                     Register register = new Register();
                     register.man_event = man_event;
                     register.DataContext = DataContext;
-                    register.sock = sock;
+                    
                     register.Show();
                     this.Close();
                 }
@@ -130,10 +126,10 @@ namespace Whisper_Messenger.Views
         private void ChangeTheme_Click(object sender, RoutedEventArgs e)
         {
             isDarkTheme = !isDarkTheme;
-            //theme = (theme == "Light") ? "Dark" : "Light";
+            
             ApplyTheme();
             SaveSettings();
-            //Application.Current.Resources[ThemeKey] = isDarkTheme ? "Dark" : "Light";
+            
             Application.Current.Properties[ThemeKey] = isDarkTheme ? "Dark" : "Light";
 
         }
@@ -193,8 +189,7 @@ namespace Whisper_Messenger.Views
         }
         private void CloseClick(object sender, RoutedEventArgs e)
         {
-            sock.Shutdown(SocketShutdown.Both);
-            sock.Close();
+            
             this.Close();
         }
     }

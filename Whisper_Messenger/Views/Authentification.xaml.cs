@@ -15,12 +15,10 @@ using System.Windows.Shapes;
 
 namespace Whisper_Messenger.Views
 {
-    /// <summary>
-    /// Interaction logic for Authentification.xaml
-    /// </summary>
+    
     public partial class Authentification : Window
     {
-        public Socket? sock;
+        
         public SynchronizationContext uiContext;
         public ManualResetEvent man_event;
         public Authentification()
@@ -35,7 +33,7 @@ namespace Whisper_Messenger.Views
             Register register = new Register();
             register.man_event = man_event;
             register.DataContext = DataContext;
-            register.sock = sock;
+            
             register.Show();
             this.Close();
         }
@@ -45,8 +43,7 @@ namespace Whisper_Messenger.Views
         }
         private void CloseClick(object sender, RoutedEventArgs e)
         {
-            sock.Shutdown(SocketShutdown.Both);
-            sock.Close();
+           
             this.Close();
         }
         private void FormClosingFunc()
@@ -59,7 +56,6 @@ namespace Whisper_Messenger.Views
                     MainWindow mainWindow = new MainWindow();
                     mainWindow.man_event = man_event;
                     mainWindow.DataContext = DataContext;
-                    mainWindow.sock = sock;
                     Thread.Sleep(1500);
                     mainWindow.Show();
                     this.Close();

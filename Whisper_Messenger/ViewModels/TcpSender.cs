@@ -75,11 +75,12 @@ namespace Whisper_Messenger.ViewModels
             {
                 try
                 {
-                    byte[] bytes = new byte[10000000];
-                    int bytesRec = 0;
+                    
+                    
                     while (true)
                     {
-                        bytesRec = socket.Receive(bytes);
+                        byte[] bytes = new byte[10000000];
+                        int bytesRec = socket.Receive(bytes);
                         if (bytesRec == 0)
                         {
                             socket.Shutdown(SocketShutdown.Both);
@@ -220,11 +221,12 @@ namespace Whisper_Messenger.ViewModels
                 {
                     User user = new User();
                     XmlSerializer serializer = new XmlSerializer(typeof(User));
-                    byte[] bytes = new byte[10000000];
-                    int bytesRec = 0;
+                    
+                    
                     while (true)
-                    { 
-                        bytesRec = socket.Receive(bytes);
+                    {
+                        byte[] bytes = new byte[10000000];
+                        int bytesRec = socket.Receive(bytes);
                         if (bytesRec == 0)
                         {
                             socket.Shutdown(SocketShutdown.Both);

@@ -375,7 +375,7 @@ namespace Whisper_Messenger.ViewModels
             if (CurrentPhone.Length == 10)
             {
                 defImg = GetImageBytes("photo_2023-12-18_16-19-13.jpg");
-                User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, avatar = defImg, command = "Register" };
+                User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, avatar = defImg, path = Path.GetFileName("photo_2023-12-18_16-19-13.jpg"), command = "Register" };
                 sender.SendCommand(user, mRevent, MyEvent);
             }
             else
@@ -542,13 +542,13 @@ namespace Whisper_Messenger.ViewModels
                     byte[] ava = GetImageBytes(CurrentPath);
                     if (ava != null)
                     {
-                        User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, avatar = ava, command = "Profile" };
+                        User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, avatar = ava, path = Path.GetFileName(CurrentPath), command = "Profile" };
                         sender.SendCommand(user, mRevent, MyEvent2);
                     }
                 }
                 else if (currentPath == null)
                 {
-                    User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, command = "Profile" };
+                    User user = new User() { login = CurrentLogin, password = CurrentPass, phone = CurrentPhone, path = Path.GetFileName(CurrentPath), command = "Profile" };
                     sender.SendCommand(user, mRevent, MyEvent2);
                 }
                 else
@@ -654,6 +654,7 @@ namespace Whisper_Messenger.ViewModels
                     Messages.Insert(0, c);
                     sender.SendCommand(user, mRevent, MyEvent2);
                     CurrentMedia = null;
+                    CurrentMediaPath = null;
                 }
             }
         }
@@ -951,7 +952,6 @@ namespace Whisper_Messenger.ViewModels
                 if (sender.us.avatar != null)
                 {
                     CurrentUserAvatar = ConvertBitmapFunc(sender.us.avatar);
-                    CurrentAvatar = ConvertBitmapFunc(sender.us.avatar);
                 }
                 CurrentLogin = sender.us.login;
             }
@@ -1023,6 +1023,7 @@ namespace Whisper_Messenger.ViewModels
                         if (sender.us.avatar != null)
                         {
                             c.Image = ConvertBitmapFunc(sender.us.avatar);
+                            CurrentAvatar = ConvertBitmapFunc(sender.us.avatar);
                         }
                     }
                 }

@@ -15,7 +15,7 @@ namespace Whisper_Messenger
             Authentification auth = new Authentification();
             auth.man_event = resetEvent;
             auth.DataContext = viewModel;
-            auth.sock = viewModel.sender.socket;
+            //auth.sock = viewModel.sender.socket;
             auth.Show();
         }
     }

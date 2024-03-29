@@ -20,7 +20,7 @@ namespace Whisper_Messenger.Views
     /// </summary>
     public partial class Register : Window
     {
-        public Socket? sock;
+        
         public SynchronizationContext uiContext;
         public ManualResetEvent man_event;
         public Register()
@@ -40,8 +40,7 @@ namespace Whisper_Messenger.Views
         }
         private void CloseClick(object sender, RoutedEventArgs e)
         {
-            sock.Shutdown(SocketShutdown.Both);
-            sock.Close();
+           
             this.Close();
         }
 
@@ -69,7 +68,7 @@ namespace Whisper_Messenger.Views
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.man_event = man_event;
                 mainWindow.DataContext = DataContext;
-                mainWindow.sock = sock;
+                
                 Thread.Sleep(1500);
                 mainWindow.Show();
                 this.Close();
@@ -100,7 +99,7 @@ namespace Whisper_Messenger.Views
             Authentification logIn = new Authentification();
             logIn.man_event = man_event;
             logIn.DataContext = DataContext;
-            logIn.sock = sock;
+            
             logIn.Show();
             this.Close();
         }
