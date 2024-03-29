@@ -189,7 +189,7 @@ namespace Whisper_Messenger.Views
         }
         private void CloseClick(object sender, RoutedEventArgs e)
         {
-            
+            Thread.Sleep(2000);
             this.Close();
         }
     }

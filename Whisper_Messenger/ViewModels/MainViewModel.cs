@@ -441,7 +441,7 @@ namespace Whisper_Messenger.ViewModels
                 user.contact = CurrentContact;
                 user.command = "Send";
                 user.mess = Sms;
-                user.data = DateTime.Now.Date.ToString();
+                user.data = DateTime.Now.ToString();
                 Chat c = new Chat();
                 c.message = Sms;
                 c.date = user.data;
@@ -644,7 +644,7 @@ namespace Whisper_Messenger.ViewModels
                 byte[] img = GetImageBytes(CurrentMediaPath);
                 if(img != null)
                 {
-                    User user = new User() { contact = CurrentContact, data = DateTime.Now.Date.ToString(), media = img, path = Path.GetFileName(CurrentMediaPath), command = "Send" };
+                    User user = new User() { contact = CurrentContact, data = DateTime.Now.ToString(), media = img, path = Path.GetFileName(CurrentMediaPath), command = "Send" };
                     Chat c = new Chat();
                     c.media = img;
                     c.date = user.data;
@@ -1032,21 +1032,21 @@ namespace Whisper_Messenger.ViewModels
             {
                 foreach (var c in Contacts)
                 {
-                    if (c.login == sender.us.login && CurrentContact == sender.us.login)
+                    if (c.contact == sender.us.login && CurrentContact == sender.us.login)
                     {
                         c.isOnline = sender.us.isOnline;
                         if (sender.us.isOnline == "green")
                         {
                             SelectedContactStatus = "⚫ online";
-                            
+                            CurrentStatus = sender.us.isOnline;
                         }
                         else if (sender.us.isOnline == "red")
                         {
                             SelectedContactStatus = "⚫ offline";
-                            
+                            CurrentStatus = sender.us.isOnline;
                         }
                     }
-                    else if (c.login == sender.us.login)
+                    else if (c.contact == sender.us.login)
                     {
                         c.isOnline = sender.us.isOnline;
                     }
