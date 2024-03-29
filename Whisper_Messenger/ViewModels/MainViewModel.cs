@@ -932,6 +932,7 @@ namespace Whisper_Messenger.ViewModels
                 if (sender.us.avatar != null)
                 {
                     CurrentUserAvatar = ConvertBitmapFunc(sender.us.avatar);
+                    CurrentAvatar = ConvertBitmapFunc(sender.us.avatar);
                 }
                 CurrentLogin = sender.us.login;
             }
