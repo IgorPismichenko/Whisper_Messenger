@@ -261,11 +261,12 @@ AllowsTransparency="True" ResizeMode="NoResize" >
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Image Source="{Binding CurrentAvatar, Mode=TwoWay}" Width="180" Height="180" Grid.Row="0"></Image>
-               
+                <Border CornerRadius="50" Grid.Row="0">
+                    <Image Source="{Binding CurrentAvatar, Mode=TwoWay}" Width="180" Height="180" ></Image>
+                </Border>
 
 
-                 <Label BorderThickness="0 2 0 2" Width="200" Height="25" Grid.Row="1" BorderBrush="Black" Content="{Binding CurrentContactPhone}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="0" FontSize="10" FontWeight="Bold" Background="{DynamicResource contactPart}" Foreground="{DynamicResource nickname}"></Label>
+                <Label BorderThickness="0 2 0 2" Width="200" Height="25" Grid.Row="1" BorderBrush="Black" Content="{Binding CurrentContactPhone}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="0" FontSize="10" FontWeight="Bold" Background="{DynamicResource contactPart}" Foreground="{DynamicResource nickname}"></Label>
                 
                 <TextBox BorderThickness="0" Margin="5" Grid.Row="2" Text="Last media list" FontSize="16" FontWeight="Bold" TextAlignment="Center" Background="{DynamicResource contactPart}" Foreground="{DynamicResource nickname}"></TextBox>
                 <ItemsControl ItemsSource="{Binding Images}" Grid.Row="3" Background="{DynamicResource contactPart}">

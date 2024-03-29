@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Whisper_Messenger.Models;
+using System.Xml.Serialization;
 
 namespace Whisper_Messenger.ViewModels
 {
@@ -34,7 +35,7 @@ namespace Whisper_Messenger.ViewModels
                 try
                 {
                     byte[] buf = new byte[1000000];
-                    IPAddress ipAddr = IPAddress.Parse("26.42.27.87");
+                    IPAddress ipAddr = IPAddress.Parse("26.208.70.215");
                     IPEndPoint ipEndPoint = new IPEndPoint(ipAddr, 49152);
                     socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, buf);
@@ -54,12 +55,10 @@ namespace Whisper_Messenger.ViewModels
             {
                 try
                 {
-                    DataContractJsonSerializer jsonFormatter = null;
-                    jsonFormatter = new DataContractJsonSerializer(typeof(User));
+                    XmlSerializer serializer = new XmlSerializer(typeof(User));
                     MemoryStream stream = new MemoryStream();
-                    byte[] msg = null;
-                    jsonFormatter.WriteObject(stream, user);
-                    msg = stream.ToArray();
+                    serializer.Serialize(stream, user);
+                    byte[] msg = stream.ToArray();
                     socket.Send(msg);
                     stream.Close();
                     ReceiveData(user, a, ev);
@@ -88,9 +87,8 @@ namespace Whisper_Messenger.ViewModels
                             return;
                         }
                         MemoryStream stream = new MemoryStream(bytes, 0, bytesRec);
-                        DataContractJsonSerializer jsonFormatter = null;
-                        jsonFormatter = new DataContractJsonSerializer(typeof(User));
-                        user = (User)jsonFormatter.ReadObject(stream);
+                        XmlSerializer serializer = new XmlSerializer(typeof(User));
+                        user = (User)serializer.Deserialize(stream);
                         stream.Close();
                         if (user.command == "Accept" || user.command == "AcceptLog")
                         {
@@ -221,8 +219,7 @@ namespace Whisper_Messenger.ViewModels
                 try
                 {
                     User user = new User();
-                    DataContractJsonSerializer jsonFormatter = null;
-                    jsonFormatter = new DataContractJsonSerializer(typeof(User));
+                    XmlSerializer serializer = new XmlSerializer(typeof(User));
                     byte[] bytes = new byte[10000000];
                     int bytesRec = 0;
                     while (true)
@@ -235,7 +232,7 @@ namespace Whisper_Messenger.ViewModels
                             return;
                         }
                         MemoryStream stream = new MemoryStream(bytes, 0, bytesRec);
-                        user = (User)jsonFormatter.ReadObject(stream);
+                        user = (User)serializer.Deserialize(stream);
                         stream.Close();
                         us = user;
                         Application.Current.Dispatcher.Invoke(() =>

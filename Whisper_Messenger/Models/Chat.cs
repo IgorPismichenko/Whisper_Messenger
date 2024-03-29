@@ -6,18 +6,20 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Serialization;
 
 namespace Whisper_Messenger.Models
 {
+    [Serializable]
     [DataContract]
     public class Chat: INotifyPropertyChanged
     {
-        [IgnoreDataMember]
+        [XmlIgnore]
         public Visibility visibleText { get; set; }
-        [IgnoreDataMember]
+        [XmlIgnore]
         public Visibility visibleMedia { get; set; }
 
-        [IgnoreDataMember]
+        [XmlIgnore]
         public Visibility VisibleText
         { 
             get
@@ -31,7 +33,7 @@ namespace Whisper_Messenger.Models
             }
         }
 
-        [IgnoreDataMember]
+        [XmlIgnore]
         public Visibility VisibleMedia
         {
             get

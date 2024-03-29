@@ -637,7 +637,15 @@ namespace Whisper_Messenger.ViewModels
 
         private void SendFile(object o)
         {
-            if(CurrentMediaPath != null)
+            if (CurrentBlock == "block")
+            {
+                MessageBox.Show("This contact was blocked. Unblock it to send messages!");
+            }
+            else if (CurrentContact == null || CurrentContact == "")
+            {
+                MessageBox.Show("Choose contact to send!");
+            }
+            else if (CurrentMediaPath != null)
             {
                 byte[] img = GetImageBytes(CurrentMediaPath);
                 if(img != null)
@@ -649,7 +657,7 @@ namespace Whisper_Messenger.ViewModels
                     c.chatContact = CurrentLogin;
                     c.VisibleText = Visibility.Collapsed;
                     c.VisibleMedia = Visibility.Visible;
-                    Messages.Add(c);
+                    Messages.Insert(0, c);
                     sender.SendCommand(user, mRevent, MyEvent2);
                     mRevent.Set();
                     CurrentMedia = null;
@@ -760,7 +768,7 @@ namespace Whisper_Messenger.ViewModels
             User user = new User() { login = CurrentLogin, command = "CloseCommand", isOnline = "red" };
             sender.SendCommand(user, mRevent, MyEvent2);
             mReventClose.Set();
-            CurrentStatus = "red";
+            //CurrentStatus = "red";
 
         }
         private bool CanClose(object o)
@@ -861,12 +869,13 @@ namespace Whisper_Messenger.ViewModels
                     }
                     Messages.Insert(0, m);
                 }
+                Images.Clear();
                 if (sender.us.mediaList != null)
                 {
                     foreach (var im in sender.us.mediaList)
                     {
                         BitmapImage tmp = ConvertBitmapFunc(im);
-                        Images.Add(tmp);
+                        Images.Insert(0, tmp);
                     }
                 }
                 if (sender.us.avatar != null)

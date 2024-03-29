@@ -6,13 +6,17 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Whisper_Messenger.Models
 {
+    [Serializable]
     [DataContract]
     public class User : INotifyPropertyChanged
     {
+        public User() { }
+
         [DataMember]
         public string? login { get; set; }
         [DataMember]
@@ -54,9 +58,9 @@ namespace Whisper_Messenger.Models
         public List<Profile>? profile { get; set; }
         [DataMember]
         public List<byte[]>? mediaList { get; set; }
-        [IgnoreDataMember]
+        [XmlIgnore]
         public BitmapImage image;
-        [IgnoreDataMember]
+        [XmlIgnore]
         public BitmapImage Image
         {
             get

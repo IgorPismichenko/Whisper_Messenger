@@ -79,19 +79,7 @@ namespace Whisper_Messenger.Views
                 mediaPreview.MediaPathTextBox.Focus();
             }
         }
-        //private void Close_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        sock.Shutdown(SocketShutdown.Both);
-        //        sock.Close();
-        //        this.Close();
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        MessageBox.Show("Клиент-formM-closing: " + ex.Message);
-        //    }
-        //}
+        
         private void Minimize_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
